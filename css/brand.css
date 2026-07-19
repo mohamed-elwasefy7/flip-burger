@@ -1,0 +1,182 @@
+/* ==========================================================================
+   FLIP BURGER — BRAND LAYER
+   Fonts, global element styling, typography hierarchy, Arabic/RTL rules.
+   --------------------------------------------------------------------------
+   FONT PROVENANCE (all OFL — @fontsource is the source of the woff2 files;
+   the shipped faces are self-hosted from assets/fonts/ and declared in
+   assets/fonts/fonts.css, loaded via a vite-ignored <link> in index.html so
+   the files keep stable, preloadable URLs. font-display: optional there
+   guarantees zero web-font CLS. Only used subsets/weights ship (Latin +
+   Arabic; latin-ext/vietnamese/Archivo-500 dropped).
+
+     Display EN : Anton 400        — condensed heavy American block.
+                  Temporary stand-in for the packaging's distressed
+                  lettering. Replace via --font-display-en in tokens.css
+                  when a licensed/custom brand display font exists.
+     Body / UI  : Archivo 400/600/700 — sturdy grotesque, tabular numerals.
+     Arabic     : Almarai 400/700/800 — strong, modern, RTL-native.
+                  800 pairs with Anton for display.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   GLOBAL
+   -------------------------------------------------------------------------- */
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body {
+  background-color: var(--color-black);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--color-flame-red);
+  color: var(--color-vintage-cream);
+}
+
+/* Single global focus treatment — warm yellow reads clearly on every
+   surface, including red buttons. */
+:focus-visible {
+  outline: 2px solid var(--color-warm-yellow);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+.app {
+  min-height: 100dvh;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   TYPOGRAPHY HIERARCHY
+   -------------------------------------------------------------------------- */
+
+.display-hero {
+  font-family: var(--font-display);
+  font-weight: 400; /* Anton is single-weight; renders heavy */
+  font-size: var(--text-hero);
+  line-height: 0.94;
+  letter-spacing: 0.015em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+
+.title-section {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-title);
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  text-wrap: balance;
+}
+
+.product-name {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--text-product);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+}
+
+.body-copy {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--color-text-secondary);
+  max-width: 65ch;
+}
+
+.body-copy--strong {
+  color: var(--color-text-primary);
+}
+
+.price {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-price);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--color-warm-yellow);
+  white-space: nowrap;
+}
+
+.price__currency {
+  font-size: 0.65em;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-inline-start: 0.3em;
+}
+
+.label {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: var(--text-label);
+  line-height: 1.2;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-fire-orange);
+}
+
+.label--muted {
+  color: var(--color-text-secondary);
+}
+
+/* Decorative heat divider */
+.heat-rule {
+  height: 2px;
+  border: 0;
+  background: var(--grad-heat-line);
+  opacity: 0.7;
+}
+
+/* --------------------------------------------------------------------------
+   ARABIC / RTL
+   Anton has no Arabic glyphs — :lang(ar) swaps display type to Almarai 800
+   and removes Latin-tuned letter-spacing (tracking breaks joined script).
+   -------------------------------------------------------------------------- */
+
+:lang(ar) {
+  letter-spacing: 0;
+}
+
+/* Standalone Arabic blocks inside an LTR page still read right-to-left. */
+.display-hero:lang(ar),
+.title-section:lang(ar),
+.product-name:lang(ar),
+.body-copy:lang(ar) {
+  direction: rtl;
+  text-align: start;
+}
+
+.display-hero:lang(ar),
+.title-section:lang(ar),
+.product-name:lang(ar) {
+  font-family: var(--font-display-ar), var(--font-body);
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: none;
+}
+
+.body-copy:lang(ar),
+.label:lang(ar) {
+  font-family: var(--font-display-ar), var(--font-body);
+}
+
+.label:lang(ar) {
+  letter-spacing: 0;
+}
+
+[dir='rtl'] .price__currency {
+  margin-inline-start: 0.3em; /* logical property — flips automatically */
+}

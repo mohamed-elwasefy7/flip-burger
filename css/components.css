@@ -1,0 +1,306 @@
+/* ==========================================================================
+   FLIP BURGER — COMPONENTS
+   Buttons · Surfaces · Navigation · Sheets/Modals · Loading · Sticky bar ·
+   Icon rules. Structural components only — page sections come later.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BUTTONS
+   Base ensures ≥48px height (44px minimum touch target respected).
+   -------------------------------------------------------------------------- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  padding: 0 var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    transform var(--motion-fast) var(--ease-out-heavy),
+    box-shadow var(--motion-fast) var(--ease-out-heavy),
+    background-color var(--motion-fast) var(--ease-out-heavy),
+    border-color var(--motion-fast) var(--ease-out-heavy),
+    filter var(--motion-fast) var(--ease-out-heavy);
+}
+
+.btn:lang(ar) {
+  letter-spacing: 0;
+  font-weight: 800;
+}
+
+/* Primary — flame ink. Tactile press, restrained glow. */
+.btn--primary {
+  background: var(--grad-flame);
+  color: var(--color-vintage-cream);
+  border-color: rgba(146, 28, 16, 0.9);
+  box-shadow:
+    var(--edge-highlight),
+    0 2px 0 rgba(6, 3, 2, 0.4),
+    0 6px 18px rgba(6, 3, 2, 0.45);
+}
+
+.btn--primary:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  box-shadow:
+    var(--edge-highlight),
+    0 3px 0 rgba(6, 3, 2, 0.4),
+    0 10px 26px rgba(6, 3, 2, 0.5),
+    var(--glow-fire);
+}
+
+.btn--primary:active {
+  filter: brightness(0.94);
+  transform: translateY(1px);
+  box-shadow: var(--shadow-inner), 0 1px 0 rgba(6, 3, 2, 0.4);
+}
+
+/* Secondary — cream outline on dark. */
+.btn--secondary {
+  background: transparent;
+  color: var(--color-text-primary);
+  border: 1.5px solid var(--color-border-strong);
+}
+
+.btn--secondary:hover {
+  border-color: var(--color-vintage-cream);
+  background: rgba(242, 230, 201, 0.06);
+  transform: translateY(-1px);
+}
+
+.btn--secondary:active {
+  background: rgba(242, 230, 201, 0.1);
+  transform: translateY(1px);
+}
+
+/* Ghost — text-only affordance. */
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  padding: 0 var(--space-4);
+}
+
+.btn--ghost:hover {
+  color: var(--color-text-primary);
+  background: rgba(242, 230, 201, 0.07);
+}
+
+.btn--ghost:active {
+  background: rgba(242, 230, 201, 0.1);
+}
+
+/* Icon button — square, centered. */
+.btn--icon {
+  width: var(--control-height);
+  min-width: var(--control-height);
+  padding: 0;
+}
+
+/* Disabled — any variant. */
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  background: var(--color-surface);
+  color: rgba(180, 164, 136, 0.45);
+  border-color: var(--color-border);
+  box-shadow: none;
+  filter: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+/* Loading — hides label, shows spinner. Set aria-busy="true" too. */
+.btn.is-loading {
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn.is-loading::after {
+  content: '';
+  position: absolute;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  border: 2px solid rgba(242, 230, 201, 0.35);
+  border-top-color: var(--color-vintage-cream);
+  animation: btn-spin 0.8s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn.is-loading::after {
+    animation: none;
+    border-top-color: var(--color-warm-yellow);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   SURFACES
+   Dark, tactile, layered. Edge highlight + border sell the "printed box"
+   feel; no generic flat cards.
+   -------------------------------------------------------------------------- */
+
+.surface {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--edge-highlight), var(--shadow-soft);
+}
+
+.surface--elevated {
+  background: var(--grad-char);
+  box-shadow: var(--edge-highlight), var(--shadow-elevated);
+}
+
+.surface--hot {
+  border-color: rgba(201, 45, 28, 0.35);
+  box-shadow: var(--edge-highlight), var(--shadow-soft), var(--glow-fire);
+}
+
+.panel {
+  padding: var(--space-6);
+}
+
+/* Navigation bar — charcoal veil over content. */
+.nav-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 4rem;
+  padding-inline: max(var(--container-pad), env(safe-area-inset-left))
+    max(var(--container-pad), env(safe-area-inset-right));
+  background: rgba(13, 9, 6, 0.86);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Bottom sheet — mobile-first, safe-area aware. */
+.sheet {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-modal);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-bottom: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  box-shadow: var(--shadow-elevated);
+  padding: var(--space-3) var(--space-5)
+    calc(var(--space-5) + env(safe-area-inset-bottom));
+}
+
+.sheet__handle {
+  width: 2.5rem;
+  height: 0.25rem;
+  margin: 0 auto var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--color-border-strong);
+}
+
+/* Modal + overlay. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  background: var(--color-overlay);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.modal {
+  position: relative;
+  z-index: var(--z-modal);
+  width: min(92vw, 32rem);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
+  padding: var(--space-6);
+}
+
+/* Loading / boot screen shell (wired to real boot flow in a later part). */
+.boot-screen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-boot);
+  display: grid;
+  place-items: center;
+  background: var(--color-black);
+}
+
+.boot-screen__ember {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: var(--grad-ember);
+  box-shadow: var(--glow-fire);
+  animation: ember-pulse var(--motion-ambient) var(--ease-cinematic) infinite;
+}
+
+@keyframes ember-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.7; }
+  50% { transform: scale(1.6); opacity: 1; }
+}
+
+/* Mobile sticky controls (order bar etc.). */
+.sticky-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-3)
+    max(var(--space-4), env(safe-area-inset-right))
+    calc(var(--space-3) + env(safe-area-inset-bottom))
+    max(var(--space-4), env(safe-area-inset-left));
+  background: rgba(13, 9, 6, 0.92);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--color-border);
+}
+
+/* --------------------------------------------------------------------------
+   ICONS — SVG only. No icon fonts, no Font Awesome, no cartoon fills.
+   Rules: 24px grid · stroke 1.75 · round caps/joins · currentColor ·
+   fill reserved for the flame accent glyph only.
+   -------------------------------------------------------------------------- */
+
+.icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon--sm { width: 1.25rem; height: 1.25rem; }
+.icon--lg { width: 2rem; height: 2rem; }
+
+/* Flame accent: the one filled glyph, always fire-colored. */
+.icon--flame {
+  fill: var(--color-flame-red);
+  stroke: none;
+}

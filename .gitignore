@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.env
+.env.*
+
+# Brand source original (18 MB) — provenance only, never shipped.
+brand-src/
+# Transient PDF-extraction scratch from the asset pipeline.
+.pdf-scratch/

@@ -1,0 +1,103 @@
+{
+  "_note": "TEMPORARY COPY — hero slogan/support and bridge lines are placeholder direction ('اقلب مزاجك' / 'FLIP THE CRAVING') approved for development only. Replace with final approved brand copy before launch. Only defaultLang + i18n are read by the app (js/core/i18n.js); all asset paths are hardcoded in index.html.",
+  "brandName": "FLIP BURGER",
+  "defaultLang": "ar",
+  "i18n": {
+    "ar": {
+      "misc": { "skip": "تخطَّ إلى المحتوى", "logoAlt": "فليب برجر — FLIP BURGER" },
+      "nav": {
+        "menu": "المنيو",
+        "story": "قصتنا",
+        "location": "موقعنا",
+        "order": "اطلب الآن",
+        "langSwitch": "English",
+        "home": "فليب برجر — الرئيسية"
+      },
+      "hero": {
+        "slogan": "اقلب مزاجك",
+        "support": "برجر أمريكي على نار حقيقية — يوصلك حار من قلب الرياض.",
+        "ctaPrimary": "استكشف المنيو",
+        "ctaSecondary": "اطلب الآن",
+        "scrollCue": "انزل إلى المنيو"
+      },
+      "bridge": {
+        "label": "المنيو",
+        "title": "جاهز تقلبها؟",
+        "line": "تصفّح الأصناف واطلب على ذوقك."
+      },
+      "menu": {
+        "catNavAria": "أقسام المنيو",
+        "order": "اطلب",
+        "orderVia": "اطلب عبر",
+        "noLinks": "روابط الطلب قريباً",
+        "noLinksHint": "نجهّز التوصيل — قريباً على تطبيقاتك المفضلة.",
+        "close": "إغلاق",
+        "favAdd": "أضف إلى المفضلة",
+        "favRemove": "أزل من المفضلة",
+        "share": "شارك المنتج",
+        "copied": "تم نسخ رابط المنتج",
+        "shareFail": "تعذّرت المشاركة",
+        "placeholder": "الصورة النهائية قريباً",
+        "badgeNew": "جديد",
+        "badgeSpicy": "حار",
+        "badgeFeatured": "مميز",
+        "unavailable": "غير متوفر حالياً",
+        "calories": "سعرة",
+        "prepTime": "دقيقة",
+        "platforms": {
+          "keeta": "كيتا",
+          "hungerstation": "هنقرستيشن",
+          "jahez": "جاهز"
+        }
+      }
+    },
+    "en": {
+      "misc": { "skip": "Skip to content", "logoAlt": "FLIP BURGER" },
+      "nav": {
+        "menu": "Menu",
+        "story": "Story",
+        "location": "Location",
+        "order": "Order Now",
+        "langSwitch": "عربي",
+        "home": "FLIP BURGER — home"
+      },
+      "hero": {
+        "slogan": "FLIP THE CRAVING",
+        "support": "Real-fire American burgers, delivered hot from the heart of Riyadh.",
+        "ctaPrimary": "Explore Menu",
+        "ctaSecondary": "Order Now",
+        "scrollCue": "Scroll to the menu"
+      },
+      "bridge": {
+        "label": "The Menu",
+        "title": "Ready to flip?",
+        "line": "Browse the lineup and build your order."
+      },
+      "menu": {
+        "catNavAria": "Menu categories",
+        "order": "Order",
+        "orderVia": "Order via",
+        "noLinks": "Ordering links coming soon",
+        "noLinksHint": "Delivery is on the way — soon on your favorite apps.",
+        "close": "Close",
+        "favAdd": "Add to favorites",
+        "favRemove": "Remove from favorites",
+        "share": "Share this product",
+        "copied": "Product link copied",
+        "shareFail": "Sharing failed",
+        "placeholder": "Final photo coming soon",
+        "badgeNew": "New",
+        "badgeSpicy": "Spicy",
+        "badgeFeatured": "Featured",
+        "unavailable": "Currently unavailable",
+        "calories": "kcal",
+        "prepTime": "min",
+        "platforms": {
+          "keeta": "Keeta",
+          "hungerstation": "HungerStation",
+          "jahez": "Jahez"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- JS flag before first paint: loader + reveal states only apply when JS runs. -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <!-- Primary -->
+  <title>FLIP BURGER — Premium Digital Menu</title>
+  <meta name="description" content="FLIP BURGER official digital experience — premium menu, delivery and QR menu." />
+  <meta name="theme-color" content="#0d0906" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://mohamed-elwasefy7.github.io/flip-burger/" />
+
+  <!-- OpenGraph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="FLIP BURGER" />
+  <meta property="og:title" content="FLIP BURGER — Premium Digital Menu" />
+  <meta property="og:description" content="FLIP BURGER official digital experience — premium menu, delivery and QR menu." />
+  <meta property="og:url" content="https://mohamed-elwasefy7.github.io/flip-burger/" />
+  <meta property="og:image" content="https://mohamed-elwasefy7.github.io/flip-burger/assets/icons/icon-512.png" />
+  <meta property="og:locale" content="ar_SA" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FLIP BURGER — Premium Digital Menu" />
+  <meta name="twitter:description" content="FLIP BURGER official digital experience — premium menu, delivery and QR menu." />
+  <meta name="twitter:image" content="https://mohamed-elwasefy7.github.io/flip-burger/assets/icons/icon-512.png" />
+
+  <!-- Self-hosted fonts (vite-ignored → stable, preloadable URLs; font-display:
+       optional → zero web-font CLS). -->
+  <link rel="stylesheet" href="./assets/fonts/fonts.css" vite-ignore />
+
+  <!-- Critical preloads: boot/hero logo + hero-visible fonts (AR default h1 =
+       Almarai 800, body = Archivo 400, EN display = Anton). -->
+  <link rel="preload" as="image" href="./assets/logo/logo-512.webp" type="image/webp" vite-ignore />
+  <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/almarai-arabic-800.woff2" crossorigin vite-ignore />
+  <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/archivo-latin-400.woff2" crossorigin vite-ignore />
+  <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/anton-latin-400.woff2" crossorigin vite-ignore />
+
+  <!-- PWA (vite-ignore: these files ship verbatim at root, so manifest-relative
+       icon paths stay correct — hashing the manifest would break them) -->
+  <link rel="manifest" href="./manifest.json" vite-ignore />
+  <link rel="icon" href="./assets/icons/icon-192.png" type="image/png" vite-ignore />
+  <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png" vite-ignore />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="FLIP" />
+
+  <!-- Structured data: entity-level Restaurant + Organization (static, crawler-
+       safe). The full Menu graph (sections + items) is injected at runtime from
+       data/menu.json by js/menu/menu-renderer.js so it never drifts. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "@id": "https://mohamed-elwasefy7.github.io/flip-burger/#restaurant",
+    "name": "FLIP BURGER",
+    "url": "https://mohamed-elwasefy7.github.io/flip-burger/",
+    "servesCuisine": ["Burgers", "American", "Fast Food"],
+    "priceRange": "$$",
+    "inLanguage": ["ar", "en"],
+    "image": "https://mohamed-elwasefy7.github.io/flip-burger/assets/icons/icon-512.png",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Riyadh",
+      "addressRegion": "Riyadh",
+      "addressCountry": "SA"
+    },
+    "hasMenu": "https://mohamed-elwasefy7.github.io/flip-burger/#menu",
+    "acceptsReservations": false
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://mohamed-elwasefy7.github.io/flip-burger/#org",
+    "name": "FLIP BURGER",
+    "url": "https://mohamed-elwasefy7.github.io/flip-burger/",
+    "logo": "https://mohamed-elwasefy7.github.io/flip-burger/assets/icons/icon-512.png"
+  }
+  </script>
+
+  <link rel="stylesheet" href="./css/main.css" />
+  <script type="module" src="./js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#app" data-i18n="misc.skip">تخطَّ إلى المحتوى</a>
+
+  <!-- BOOT / LOADING SCREEN — decorative overlay, page content stays accessible.
+       Hidden entirely without JS (see .js gating in css/sections.css). -->
+  <div class="boot-screen tx tx-grain" id="boot" aria-hidden="true">
+    <div class="boot-screen__glow"></div>
+    <div class="boot-screen__inner">
+      <img
+        class="boot-screen__logo"
+        id="boot-logo"
+        src="./assets/logo/logo-512.webp"
+        alt=""
+        width="512"
+        height="512"
+        decoding="async"
+        vite-ignore
+      />
+      <div class="boot-screen__track">
+        <div class="boot-screen__bar" id="boot-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <header class="nav-bar site-nav" id="site-nav">
+    <a class="site-nav__brand" href="./" data-i18n-aria="nav.home" aria-label="فليب برجر — الرئيسية">
+      <img src="./assets/logo/logo-192.webp" alt="FLIP BURGER" width="44" height="44" decoding="async" vite-ignore />
+    </a>
+
+    <nav class="site-nav__links" aria-label="Primary">
+      <a class="site-nav__link" href="#menu" data-i18n="nav.menu">المنيو</a>
+      <a class="site-nav__link" href="#story" data-i18n="nav.story">قصتنا</a>
+      <a class="site-nav__link" href="#location" data-i18n="nav.location">موقعنا</a>
+    </nav>
+
+    <div class="site-nav__actions">
+      <button class="btn btn--ghost site-nav__lang" id="lang-toggle" type="button" data-i18n="nav.langSwitch" aria-label="Switch language / تبديل اللغة">English</button>
+      <a class="btn btn--primary site-nav__order" href="#menu" data-i18n="nav.order">اطلب الآن</a>
+    </div>
+  </header>
+
+  <main id="app" class="app">
+
+    <!-- HERO — DOM order IS the mobile order (absolute rule):
+         logo → slogan → support → visual → CTAs → scroll cue.
+         Desktop re-composes via grid-template-areas only. -->
+    <section class="hero" aria-labelledby="hero-slogan">
+      <div class="hero__atmosphere" aria-hidden="true">
+        <div class="hero__glow"></div>
+        <div class="hero__smoke hero__smoke--a"></div>
+        <div class="hero__smoke hero__smoke--b"></div>
+      </div>
+
+      <div class="container hero__grid">
+        <img
+          class="hero__mark"
+          data-reveal="mark"
+          src="./assets/logo/logo-512.webp"
+          alt="FLIP BURGER"
+          width="512"
+          height="512"
+          decoding="async"
+          fetchpriority="high"
+          vite-ignore
+        />
+
+        <h1 class="display-hero hero__slogan" id="hero-slogan" data-reveal="slogan" data-i18n="hero.slogan">اقلب مزاجك</h1>
+
+        <p class="body-copy body-copy--strong hero__support" data-reveal="support" data-i18n="hero.support">
+          برجر أمريكي على نار حقيقية — يوصلك حار من قلب الرياض.
+        </p>
+
+        <div class="hero__stage" data-reveal="stage" aria-hidden="true">
+          <picture>
+            <source
+              type="image/webp"
+              srcset="./assets/images/flames-stage-800.webp 800w, ./assets/images/flames-stage-1600.webp 1600w"
+              sizes="(min-width: 1024px) 44vw, 92vw"
+            />
+            <img
+              class="hero__flames"
+              id="hero-flames-img"
+              src="./assets/images/flames-stage-1600.jpg"
+              alt=""
+              width="1600"
+              height="1048"
+              decoding="async"
+              loading="eager"
+              vite-ignore
+            />
+          </picture>
+          <img
+            class="hero__badge"
+            id="hero-badge"
+            src="./assets/logo/logo-1024.webp"
+            alt=""
+            width="1024"
+            height="1024"
+            decoding="async"
+            vite-ignore
+          />
+          <div class="hero__embers" id="hero-embers"></div>
+        </div>
+
+        <div class="hero__ctas" data-reveal="ctas">
+          <a class="btn btn--primary" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaPrimary">استكشف المنيو</a>
+          <a class="btn btn--secondary" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaSecondary">اطلب الآن</a>
+        </div>
+
+        <button
+          class="hero__cue"
+          id="scroll-cue"
+          type="button"
+          data-reveal="cue"
+          data-scroll-to="#menu"
+          data-i18n-aria="hero.scrollCue"
+          aria-label="انزل إلى المنيو"
+        >
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14M6 13l6 6 6-6"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- MENU ENTRY — heading + short intro (no second long intro). -->
+    <section class="bridge tx tx-smoke" id="menu" aria-labelledby="bridge-title">
+      <div class="container bridge__inner">
+        <span class="label" data-i18n="bridge.label">المنيو</span>
+        <h2 class="title-section" id="bridge-title" data-i18n="bridge.title">جاهز تقلبها؟</h2>
+        <hr class="heat-rule bridge__rule" />
+        <p class="body-copy bridge__line" data-i18n="bridge.line">
+          تصفّح الأصناف واطلب على ذوقك.
+        </p>
+      </div>
+    </section>
+
+    <!-- MENU — rendered dynamically from data/menu.json (menu-renderer.js). -->
+    <section class="menu-zone" id="menu-list" data-i18n-aria="nav.menu" aria-label="المنيو">
+      <div class="menu-zone__nav" id="menu-cat-nav"></div>
+      <div class="menu-zone__products" id="menu-products"></div>
+    </section>
+
+  </main>
+
+  <p id="share-status" class="visually-hidden" role="status" aria-live="polite"></p>
+
+  <noscript>
+    <p class="noscript">FLIP BURGER — this experience requires JavaScript.</p>
+  </noscript>
+</body>
+</html>

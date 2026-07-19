@@ -1,0 +1,425 @@
+/* ==========================================================================
+   FLIP BURGER — SECTIONS (Part 3)
+   Boot screen · Site navigation · Hero · Menu bridge.
+   Composition layer only — colors/type/motion all come from tokens.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   BOOT / LOADING SCREEN
+   Rendered only when JS runs (html.js); no-JS visitors go straight to content.
+   -------------------------------------------------------------------------- */
+
+.boot-screen {
+  display: none;
+}
+
+.js .boot-screen {
+  /* Fixed full-viewport overlay. Must re-assert position here: the element
+     also carries .tx (position: relative, utilities.css imports later) which
+     would otherwise win at equal specificity, dropping the overlay into flow
+     and pushing the hero down ~178px — a large layout shift on boot removal. */
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-boot);
+  display: grid;
+  place-items: center;
+  background: var(--color-black);
+}
+
+.boot-screen__glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(42% 34% at 50% 56%, rgba(201, 45, 28, 0.16), transparent 70%),
+    radial-gradient(30% 24% at 50% 60%, rgba(226, 88, 34, 0.1), transparent 70%);
+}
+
+.boot-screen__inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+}
+
+.boot-screen__logo {
+  width: clamp(9rem, 24vw, 13rem);
+  height: auto;
+  filter: drop-shadow(0 12px 40px rgba(6, 3, 2, 0.8));
+}
+
+.boot-screen__track {
+  width: clamp(8rem, 22vw, 12rem);
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: rgba(242, 230, 201, 0.12);
+  overflow: hidden;
+}
+
+.boot-screen__bar {
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--grad-ember);
+  box-shadow: 0 0 12px rgba(246, 168, 28, 0.35);
+}
+
+/* Scroll lock while booting (Lenis also stopped in JS). */
+.js.is-booting {
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   SITE NAVIGATION
+   Transparent over the hero → elevated dark surface after scroll.
+   -------------------------------------------------------------------------- */
+
+.site-nav {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  justify-content: space-between;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    background-color var(--motion-standard) var(--ease-out-heavy),
+    border-color var(--motion-standard) var(--ease-out-heavy),
+    box-shadow var(--motion-standard) var(--ease-out-heavy);
+}
+
+.site-nav.is-scrolled {
+  background: rgba(13, 9, 6, 0.88);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  border-bottom-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(6, 3, 2, 0.35);
+}
+
+.site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  min-width: var(--tap-target);
+  min-height: var(--tap-target);
+}
+
+.site-nav__brand img {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.site-nav__links {
+  display: none;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  font-weight: 600;
+  font-size: var(--text-small);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  transition: color var(--motion-fast) var(--ease-out-heavy);
+}
+
+.site-nav__link:lang(ar) {
+  letter-spacing: 0;
+}
+
+.site-nav__link:hover {
+  color: var(--color-text-primary);
+}
+
+.site-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.site-nav__lang {
+  min-width: var(--tap-target);
+  font-size: var(--text-small);
+}
+
+@media (max-width: 767px) {
+  .site-nav__order {
+    min-height: var(--tap-target);
+    padding-inline: var(--space-4);
+    font-size: var(--text-small);
+  }
+}
+
+@media (min-width: 1024px) {
+  .site-nav__links {
+    display: flex;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   HERO
+   DOM order = mobile order. Desktop split via grid-template-areas.
+   -------------------------------------------------------------------------- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding-top: calc(4.5rem + env(safe-area-inset-top));
+  padding-bottom: var(--space-7);
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% 112%, #1a0f08 0%, transparent 55%),
+    var(--color-black);
+}
+
+/* Atmosphere layers (decorative) */
+.hero__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero__glow {
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(46% 38% at 50% 78%, rgba(201, 45, 28, 0.22), transparent 68%),
+    radial-gradient(30% 26% at 50% 84%, rgba(226, 88, 34, 0.16), transparent 70%),
+    radial-gradient(18% 14% at 50% 90%, rgba(246, 168, 28, 0.08), transparent 75%);
+}
+
+.hero__smoke {
+  position: absolute;
+  width: 55vmax;
+  height: 55vmax;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.hero__smoke--a {
+  inset-inline-start: -18vmax;
+  bottom: -20vmax;
+  background: radial-gradient(circle, rgba(40, 28, 19, 0.55), transparent 65%);
+  animation: smoke-drift-a calc(var(--motion-ambient) * 4) var(--ease-cinematic) infinite alternate;
+}
+
+.hero__smoke--b {
+  inset-inline-end: -20vmax;
+  bottom: -16vmax;
+  background: radial-gradient(circle, rgba(23, 16, 11, 0.65), transparent 65%);
+  animation: smoke-drift-b calc(var(--motion-ambient) * 5) var(--ease-cinematic) infinite alternate;
+}
+
+@keyframes smoke-drift-a {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(6vmax, -5vmax, 0) scale(1.12); }
+}
+
+@keyframes smoke-drift-b {
+  from { transform: translate3d(0, 0, 0) scale(1.08); }
+  to { transform: translate3d(-5vmax, -6vmax, 0) scale(1); }
+}
+
+/* Film grain across the whole hero */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-texture);
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+  opacity: 0.06;
+}
+
+/* Grid — mobile: single column in DOM order */
+.hero__grid {
+  position: relative;
+  z-index: var(--z-content);
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--space-5);
+}
+
+.hero__mark {
+  width: clamp(6.5rem, 22vw, 8.5rem);
+  height: auto;
+  filter: drop-shadow(0 10px 30px rgba(6, 3, 2, 0.7));
+}
+
+.hero__slogan {
+  max-width: 14ch;
+}
+
+.hero__support {
+  max-width: 42ch;
+}
+
+/* Visual stage — official flames panel + official badge in its empty circle */
+.hero__stage {
+  position: relative;
+  width: min(100%, 34rem);
+  aspect-ratio: 1870 / 1225;
+  filter: drop-shadow(0 24px 60px rgba(6, 3, 2, 0.65));
+}
+
+.hero__flames {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.hero__badge {
+  position: absolute;
+  /* Centered on the empty badge ring in the packaging art */
+  left: 50%;
+  top: 49.2%;
+  width: 54.8%;
+  height: auto;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 10px 28px rgba(6, 3, 2, 0.8));
+}
+
+[dir='rtl'] .hero__badge {
+  /* physical left/top used on purpose — artwork geometry doesn't mirror */
+  left: 50%;
+}
+
+.hero__embers {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ember {
+  position: absolute;
+  bottom: 6%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--grad-ember);
+  box-shadow: 0 0 8px rgba(246, 168, 28, 0.55);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.hero__cue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--tap-target);
+  height: var(--tap-target);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  transition: color var(--motion-fast) var(--ease-out-heavy);
+}
+
+.hero__cue:hover {
+  color: var(--color-warm-yellow);
+}
+
+.hero__cue .icon {
+  animation: cue-bob calc(var(--motion-ambient) / 1.4) var(--ease-cinematic) infinite alternate;
+}
+
+@keyframes cue-bob {
+  from { transform: translateY(-3px); }
+  to { transform: translateY(3px); }
+}
+
+/* Reveal states — only when JS runs; reduced motion shows everything. */
+.js .hero [data-reveal] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .hero [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .hero__smoke,
+  .hero__cue .icon {
+    animation: none;
+  }
+}
+
+/* Desktop split composition — DOM untouched */
+@media (min-width: 1024px) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    grid-template-areas:
+      'mark stage'
+      'slogan stage'
+      'support stage'
+      'ctas stage'
+      'cue cue';
+    justify-items: start;
+    align-content: center;
+    text-align: start;
+    column-gap: var(--space-8);
+    row-gap: var(--space-5);
+  }
+
+  .hero__mark { grid-area: mark; width: 6.5rem; }
+  .hero__slogan { grid-area: slogan; }
+  .hero__support { grid-area: support; }
+  .hero__stage { grid-area: stage; width: 100%; max-width: 38rem; align-self: center; justify-self: end; }
+  .hero__ctas { grid-area: ctas; justify-content: flex-start; }
+  .hero__cue { grid-area: cue; justify-self: center; margin-top: var(--space-4); }
+}
+
+/* Tighter phones */
+@media (max-width: 429px) {
+  .hero {
+    padding-top: calc(4rem + env(safe-area-inset-top));
+  }
+
+  .hero__grid {
+    gap: var(--space-4);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   MENU BRIDGE
+   -------------------------------------------------------------------------- */
+
+.bridge {
+  border-top: 1px solid var(--color-border);
+  background: var(--color-charcoal);
+}
+
+.bridge__inner {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: var(--space-4);
+  padding-block: var(--space-9);
+}
+
+.bridge__rule {
+  width: min(18rem, 60%);
+}
+
+.bridge__line {
+  max-width: 52ch;
+}

@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>FLIP BURGER — Brand System (Internal Preview)</title>
+  <meta name="theme-color" content="#0d0906" />
+  <meta name="color-scheme" content="dark" />
+  <link rel="icon" href="./assets/icons/icon-192.png" type="image/png" vite-ignore />
+  <link rel="stylesheet" href="./assets/fonts/fonts.css" vite-ignore />
+  <link rel="stylesheet" href="./css/main.css" />
+  <script type="module" src="./js/brand-preview.js"></script>
+
+  <!-- Preview-only chrome. Lives here on purpose: production CSS stays clean. -->
+  <style>
+    .spec-banner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--container-pad);
+      background: var(--color-charcoal);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .spec-section { padding-block: var(--space-8); border-bottom: 1px solid var(--color-border); }
+    .spec-head { display: flex; align-items: baseline; gap: var(--space-4); margin-bottom: var(--space-6); }
+    .spec-num { font-family: var(--font-display); font-size: 1rem; color: var(--color-flame-red); letter-spacing: .1em; }
+    .spec-grid { display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); }
+    .spec-note { margin-top: var(--space-4); font-size: var(--text-small); color: var(--color-text-secondary); max-width: 70ch; }
+
+    .swatch { border-radius: var(--radius-md); border: 1px solid var(--color-border); overflow: hidden; }
+    .swatch__chip { height: 5.5rem; }
+    .swatch__meta { padding: var(--space-2) var(--space-3); background: var(--color-surface); }
+    .swatch__name { display: block; font-size: .75rem; font-weight: 600; color: var(--color-text-primary); overflow-wrap: anywhere; }
+    .swatch__hex { display: block; font-size: .75rem; color: var(--color-text-secondary); text-transform: uppercase; }
+
+    .type-row { display: grid; gap: var(--space-2); padding-block: var(--space-5); border-bottom: 1px dashed var(--color-border); }
+    .type-row:last-child { border-bottom: 0; }
+
+    .demo-row { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: center; }
+    .demo-stack { display: grid; gap: var(--space-5); }
+    .demo-box { min-height: 9rem; display: grid; place-items: center; text-align: center; padding: var(--space-5); }
+
+    .icon-cell { display: grid; place-items: center; gap: var(--space-2); padding: var(--space-4);
+      background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .icon-cell span { font-size: .7rem; color: var(--color-text-secondary); letter-spacing: .08em; text-transform: uppercase; }
+
+    .space-demo { display: grid; gap: var(--space-2); }
+    .space-demo .row { display: flex; align-items: center; gap: var(--space-4); }
+    .space-demo .bar { height: 1rem; background: var(--grad-ember); border-radius: 2px; }
+    .space-demo code { font-size: .75rem; color: var(--color-text-secondary); min-width: 9rem; }
+
+    .radius-demo { height: 6rem; background: var(--color-surface-elevated); border: 1px solid var(--color-border-strong); display: grid; place-items: center; font-size: .75rem; color: var(--color-text-secondary); }
+
+    .motion-tile { padding: var(--space-5); text-align: center; cursor: pointer;
+      transition: transform var(--dur, var(--motion-standard)) var(--ease-out-heavy), box-shadow var(--dur, var(--motion-standard)) var(--ease-out-heavy); }
+    .motion-tile:hover { transform: translateY(-6px); box-shadow: var(--edge-highlight), var(--shadow-elevated), var(--glow-fire); }
+    .motion-tile code { display: block; margin-top: var(--space-2); font-size: .72rem; color: var(--color-text-secondary); }
+
+    .ember-demo { display: inline-block; width: .9rem; height: .9rem; border-radius: 50%;
+      background: var(--grad-ember); box-shadow: var(--glow-fire);
+      animation: ember-pulse var(--motion-ambient) var(--ease-cinematic) infinite; }
+
+    [dir='rtl'] .spec-num { letter-spacing: 0; }
+  </style>
+</head>
+<body class="tx tx-grain">
+
+  <header class="spec-banner">
+    <div>
+      <span class="label">Internal — Brand System Preview</span>
+      <span class="label label--muted" lang="ar">معاينة داخلية لنظام الهوية</span>
+    </div>
+    <div class="demo-row">
+      <button class="btn btn--secondary" id="toggle-rtl" type="button">RTL / عربي</button>
+    </div>
+  </header>
+
+  <main class="container" id="app">
+
+    <!-- 01 · PALETTE -->
+    <section class="spec-section" aria-labelledby="s-palette">
+      <div class="spec-head">
+        <span class="spec-num">01</span>
+        <h2 class="title-section" id="s-palette">Palette</h2>
+      </div>
+      <div class="spec-grid" id="palette-grid">
+        <!-- populated by brand-preview.js from computed tokens -->
+      </div>
+      <p class="spec-note">Extracted from the official packaging artwork. Layered warm blacks — never flat #000. Red reads as printed flame ink, not neon.</p>
+    </section>
+
+    <!-- 02 · TYPOGRAPHY -->
+    <section class="spec-section" aria-labelledby="s-type">
+      <div class="spec-head">
+        <span class="spec-num">02</span>
+        <h2 class="title-section" id="s-type">Typography</h2>
+      </div>
+
+      <div class="type-row">
+        <span class="label label--muted">Hero display — Anton</span>
+        <p class="display-hero">Flame-Grilled</p>
+        <p class="display-hero" lang="ar">مشوي على النار</p>
+      </div>
+
+      <div class="type-row">
+        <span class="label label--muted">Section title</span>
+        <p class="title-section">Built the hard way</p>
+        <p class="title-section" lang="ar">صُنع بالطريقة الصعبة</p>
+      </div>
+
+      <div class="type-row">
+        <span class="label label--muted">Product name + price (specimen)</span>
+        <p class="product-name">Product Name</p>
+        <p class="product-name" lang="ar">اسم المنتج</p>
+        <p class="price">00<span class="price__currency">SAR</span></p>
+      </div>
+
+      <div class="type-row">
+        <span class="label label--muted">Body copy — Archivo / Almarai</span>
+        <p class="body-copy">Specimen paragraph. Smoke, char and heat — set in a sturdy grotesque that stays readable at every size, on every surface, without stealing attention from the display voice.</p>
+        <p class="body-copy" lang="ar">فقرة تجريبية لعرض النص العربي. دخان وفحم وحرارة — بخط قوي واضح يبقى مقروءًا في كل المقاسات وعلى كل الأسطح دون أن يسرق الانتباه من صوت العرض الرئيسي.</p>
+      </div>
+
+      <div class="type-row">
+        <span class="label label--muted">Labels</span>
+        <div class="demo-row">
+          <span class="label">Hot Label</span>
+          <span class="label label--muted">Muted Label</span>
+          <span class="label" lang="ar">تصنيف حار</span>
+        </div>
+      </div>
+
+      <hr class="heat-rule" />
+      <p class="spec-note">Anton is the licensed OFL stand-in for the packaging's distressed lettering (swap via <code>--font-display-en</code>). Arabic display and body run on Almarai 800/400. No runtime Google Fonts — everything is bundled and hashed at build.</p>
+    </section>
+
+    <!-- 03 · BUTTONS -->
+    <section class="spec-section" aria-labelledby="s-buttons">
+      <div class="spec-head">
+        <span class="spec-num">03</span>
+        <h2 class="title-section" id="s-buttons">Buttons</h2>
+      </div>
+      <div class="demo-stack">
+        <div class="demo-row">
+          <button class="btn btn--primary" type="button">Order Now</button>
+          <button class="btn btn--secondary" type="button">View Menu</button>
+          <button class="btn btn--ghost" type="button">Learn More</button>
+          <button class="btn btn--primary btn--icon" type="button" aria-label="Add item">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="demo-row">
+          <button class="btn btn--primary" type="button" disabled>Disabled</button>
+          <button class="btn btn--primary is-loading" type="button" aria-busy="true" id="loading-demo">Loading</button>
+          <button class="btn btn--secondary" type="button" id="loading-trigger">Toggle loading demo</button>
+          <button class="btn btn--primary" type="button" lang="ar">اطلب الآن</button>
+        </div>
+      </div>
+      <p class="spec-note">Hover lifts, press sinks (tactile). Focus ring is warm yellow on every variant — tab through to verify. All targets ≥48px.</p>
+    </section>
+
+    <!-- 04 · SURFACES -->
+    <section class="spec-section" aria-labelledby="s-surfaces">
+      <div class="spec-head">
+        <span class="spec-num">04</span>
+        <h2 class="title-section" id="s-surfaces">Surfaces</h2>
+      </div>
+      <div class="grid">
+        <div class="col-half surface panel demo-box"><span class="body-copy body-copy--strong">.surface — base panel</span></div>
+        <div class="col-half surface surface--elevated panel demo-box"><span class="body-copy body-copy--strong">.surface--elevated</span></div>
+        <div class="col-half surface surface--hot panel demo-box"><span class="body-copy body-copy--strong">.surface--hot — fire edge</span></div>
+        <div class="col-half surface panel demo-box" style="padding:0">
+          <div class="sheet" style="position:static; border-radius:var(--radius-lg) var(--radius-lg) 0 0;">
+            <div class="sheet__handle"></div>
+            <span class="body-copy body-copy--strong">.sheet — bottom sheet surface</span>
+          </div>
+        </div>
+      </div>
+      <p class="spec-note">Nav bar, overlay/modal, boot screen and mobile sticky bar share the same layered-charcoal language (see components.css).</p>
+    </section>
+
+    <!-- 05 · TEXTURES -->
+    <section class="spec-section" aria-labelledby="s-textures">
+      <div class="spec-head">
+        <span class="spec-num">05</span>
+        <h2 class="title-section" id="s-textures">Textures</h2>
+      </div>
+      <div class="grid">
+        <div class="col-half surface panel demo-box tx tx-grain"><span class="body-copy body-copy--strong">.tx-grain — smoky grain</span></div>
+        <div class="col-half surface panel demo-box tx tx-worn"><span class="body-copy body-copy--strong">.tx-worn — worn print</span></div>
+        <div class="col-half surface panel demo-box tx tx-ink"><span class="body-copy body-copy--strong">.tx-ink — distressed ink</span></div>
+        <div class="col-half surface panel demo-box tx tx-speckle"><span class="body-copy body-copy--strong">.tx-speckle — fire speckles</span></div>
+        <div class="col-half surface panel demo-box tx tx-soot"><span class="body-copy body-copy--strong">.tx-soot — soft soot</span></div>
+        <div class="col-half surface panel demo-box tx tx-smoke"><span class="body-copy body-copy--strong">.tx-smoke — smoke atmosphere</span></div>
+      </div>
+      <p class="spec-note">All textures are CSS/SVG (seamless stitched turbulence — no raster files, no visible tiling), capped at ≤12% opacity. Text stays readable on every one.</p>
+    </section>
+
+    <!-- 06 · ICONS -->
+    <section class="spec-section" aria-labelledby="s-icons">
+      <div class="spec-head">
+        <span class="spec-num">06</span>
+        <h2 class="title-section" id="s-icons">Icons</h2>
+      </div>
+      <div class="spec-grid">
+        <div class="icon-cell">
+          <svg class="icon icon--flame icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c2.6 3 4.9 5.7 4.9 9.2a4.9 4.9 0 0 1-9.8 0c0-1.5.5-2.9 1.4-4.1.4 1 1 1.7 1.9 2.3-.2-2.6.4-5.2 1.6-7.4Z"/></svg>
+          <span>flame (fill)</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 9.5C4.5 6 7.9 3.5 12 3.5s7.5 2.5 7.5 6M4 13h16M6 20.5h12a2 2 0 0 0 2-2V17H4v1.5a2 2 0 0 0 2 2Z"/></svg>
+          <span>burger</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V7a4 4 0 0 1 8 0v1M4.8 8h14.4l-1.1 11.1a2 2 0 0 1-2 1.9H7.9a2 2 0 0 1-2-1.9L4.8 8Z"/></svg>
+          <span>bag</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-5.3-7-10.8a7 7 0 0 1 14 0C19 15.7 12 21 12 21Z"/><circle cx="12" cy="10" r="2.4"/></svg>
+          <span>location</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h4l1.5 4.2-2.1 1.5a12.5 12.5 0 0 0 5.9 5.9l1.5-2.1L20 15v4a2 2 0 0 1-2.2 2A17 17 0 0 1 3 6.2 2 2 0 0 1 5 4Z"/></svg>
+          <span>phone</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
+          <span>arrow</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          <span>plus</span>
+        </div>
+        <div class="icon-cell">
+          <svg class="icon icon--lg" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          <span>close</span>
+        </div>
+      </div>
+      <p class="spec-note">SVG only. 24px grid, stroke 1.75, round caps/joins, <code>currentColor</code>. Fill is reserved for the flame accent glyph. No icon fonts, no Font Awesome, no cartoon fills.</p>
+    </section>
+
+    <!-- 07 · SPACING -->
+    <section class="spec-section" aria-labelledby="s-spacing">
+      <div class="spec-head">
+        <span class="spec-num">07</span>
+        <h2 class="title-section" id="s-spacing">Spacing</h2>
+      </div>
+      <div class="space-demo" id="space-demo">
+        <!-- populated by brand-preview.js -->
+      </div>
+      <p class="spec-note">4px-anchored scale. Grid: 4 columns mobile · 8 from 768px · 12 from 1024px, with safe-area-aware containers.</p>
+    </section>
+
+    <!-- 08 · RADIUS & SHADOWS -->
+    <section class="spec-section" aria-labelledby="s-radius">
+      <div class="spec-head">
+        <span class="spec-num">08</span>
+        <h2 class="title-section" id="s-radius">Radius &amp; Shadows</h2>
+      </div>
+      <div class="spec-grid">
+        <div class="radius-demo" style="border-radius:var(--radius-sm)">--radius-sm</div>
+        <div class="radius-demo" style="border-radius:var(--radius-md)">--radius-md</div>
+        <div class="radius-demo" style="border-radius:var(--radius-lg)">--radius-lg</div>
+        <div class="radius-demo" style="border-radius:var(--radius-pill)">--radius-pill</div>
+        <div class="radius-demo" style="box-shadow:var(--shadow-soft); border-radius:var(--radius-md)">soft shadow</div>
+        <div class="radius-demo" style="box-shadow:var(--shadow-elevated); border-radius:var(--radius-md)">elevated</div>
+        <div class="radius-demo" style="box-shadow:var(--glow-fire); border-radius:var(--radius-md)">fire glow</div>
+        <div class="radius-demo" style="box-shadow:var(--shadow-inner); border-radius:var(--radius-md)">inner</div>
+      </div>
+      <p class="spec-note">Bold and structured like the packaging — nothing over-rounded.</p>
+    </section>
+
+    <!-- 09 · MOTION -->
+    <section class="spec-section" aria-labelledby="s-motion" style="border-bottom:0">
+      <div class="spec-head">
+        <span class="spec-num">09</span>
+        <h2 class="title-section" id="s-motion">Motion</h2>
+      </div>
+      <div class="grid">
+        <div class="col-half surface motion-tile" style="--dur:var(--motion-fast)" tabindex="0">
+          <span class="body-copy body-copy--strong">Fast — interactions</span>
+          <code>--motion-fast · 160ms · ease-out-heavy</code>
+        </div>
+        <div class="col-half surface motion-tile" style="--dur:var(--motion-standard)" tabindex="0">
+          <span class="body-copy body-copy--strong">Standard — transitions</span>
+          <code>--motion-standard · 340ms</code>
+        </div>
+        <div class="col-half surface motion-tile" style="--dur:var(--motion-reveal)" tabindex="0">
+          <span class="body-copy body-copy--strong">Reveal — premium entrances</span>
+          <code>--motion-reveal · 850ms · ease-cinematic</code>
+        </div>
+        <div class="col-half surface motion-tile demo-box" style="--dur:var(--motion-standard)">
+          <span class="body-copy body-copy--strong">Ambient — <span class="ember-demo" aria-hidden="true"></span> ember pulse</span>
+          <code>--motion-ambient · 2600ms · loops</code>
+        </div>
+      </div>
+      <p class="spec-note">Heavy, smooth, controlled — never bouncy. Under <code>prefers-reduced-motion</code> every token collapses to 0.01ms and Lenis smooth scroll never initializes.</p>
+    </section>
+
+  </main>
+
+  <footer class="spec-banner" style="border-top:1px solid var(--color-border); border-bottom:0">
+    <span class="label label--muted">FLIP BURGER — brand system v1 · temporary preview route · not linked from production</span>
+  </footer>
+
+</body>
+</html>

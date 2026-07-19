@@ -1,0 +1,372 @@
+/* ==========================================================================
+   FLIP BURGER — MENU (Part 4)
+   Category strip · product sections · order sheet.
+   Mobile source order is the law; desktop variants re-place media only.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   MENU ZONE
+   -------------------------------------------------------------------------- */
+
+.menu-zone {
+  position: relative;
+  background: var(--color-charcoal);
+}
+
+/* --------------------------------------------------------------------------
+   CATEGORY NAV — sticky under the site nav
+   -------------------------------------------------------------------------- */
+
+.menu-zone__nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.cat-nav {
+  background: rgba(23, 16, 11, 0.92);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-block: 1px solid var(--color-border);
+}
+
+.cat-nav__strip {
+  display: flex;
+  gap: var(--space-2);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-2)
+    max(var(--container-pad), env(safe-area-inset-right))
+    var(--space-2)
+    max(var(--container-pad), env(safe-area-inset-left));
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* Edge fade — direction-agnostic (both sides) */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.cat-nav__strip::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-nav__chip {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  padding: 0 var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: var(--text-small);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  transition:
+    color var(--motion-fast) var(--ease-out-heavy),
+    border-color var(--motion-fast) var(--ease-out-heavy),
+    background-color var(--motion-fast) var(--ease-out-heavy);
+}
+
+.cat-nav__chip:lang(ar) {
+  letter-spacing: 0;
+}
+
+.cat-nav__chip:hover {
+  color: var(--color-text-primary);
+}
+
+/* Printed-ink underline for the active chip */
+.cat-nav__chip::after {
+  content: '';
+  position: absolute;
+  inset-inline: var(--space-5);
+  bottom: 0.45rem;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--grad-heat-line);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition:
+    opacity var(--motion-fast) var(--ease-out-heavy),
+    transform var(--motion-fast) var(--ease-out-heavy);
+}
+
+.cat-nav__chip.is-active {
+  color: var(--color-text-primary);
+  border-color: var(--color-border-strong);
+  background: rgba(242, 230, 201, 0.05);
+}
+
+.cat-nav__chip.is-active::after {
+  opacity: 0.9;
+  transform: scaleX(1);
+}
+
+.cat-nav__chip--fire-orange.is-active {
+  border-color: rgba(226, 88, 34, 0.5);
+}
+
+.cat-nav__chip--flame-red.is-active {
+  border-color: rgba(201, 45, 28, 0.55);
+}
+
+/* --------------------------------------------------------------------------
+   PRODUCT SECTIONS
+   Mobile: single column in DOM order (image first, always).
+   -------------------------------------------------------------------------- */
+
+.product {
+  display: grid;
+  gap: var(--space-6);
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-8)
+    max(var(--container-pad), env(safe-area-inset-right))
+    var(--space-8)
+    max(var(--container-pad), env(safe-area-inset-left));
+  transition: background-color var(--motion-standard) var(--ease-out-heavy);
+}
+
+/* Background mood per product (from menu.json) */
+.product--bg-black { background: var(--color-black); }
+.product--bg-charcoal { background: var(--color-charcoal); }
+.product--bg-surface { background: var(--color-surface); }
+
+/* Media */
+.product__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--edge-highlight), var(--shadow-elevated);
+}
+
+.product__media picture,
+.product__media img {
+  width: 100%;
+  height: 100%;
+}
+
+.product__media img {
+  object-fit: cover;
+  display: block;
+}
+
+.product__media--placeholder {
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(60% 50% at 50% 60%, rgba(201, 45, 28, 0.08), transparent 70%),
+    var(--grad-char);
+  border: 1px solid var(--color-border);
+}
+
+.product__media-note {
+  padding: var(--space-2) var(--space-4);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: var(--radius-pill);
+}
+
+/* Content */
+.product__content {
+  display: grid;
+  gap: var(--space-3);
+  align-content: center;
+  justify-items: start;
+  max-width: 38rem;
+}
+
+.product__subtitle {
+  font-family: var(--font-body);
+  font-weight: 600;
+  color: var(--color-fire-orange);
+  letter-spacing: 0.04em;
+}
+
+.product__subtitle:lang(ar) {
+  letter-spacing: 0;
+}
+
+.product__desc {
+  max-width: 46ch;
+}
+
+.product__ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.product__ingredients li {
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-small);
+  color: var(--color-text-secondary);
+  background: rgba(13, 9, 6, 0.35);
+}
+
+.product__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.product__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.product__badge:lang(ar) {
+  letter-spacing: 0;
+}
+
+.product__badge--new {
+  color: var(--color-warm-yellow);
+  border: 1px solid rgba(246, 168, 28, 0.45);
+}
+
+.product__badge--spicy {
+  color: var(--color-flame-red);
+  border: 1px solid rgba(201, 45, 28, 0.5);
+}
+
+.product__badge--featured {
+  color: var(--color-vintage-cream);
+  border: 1px solid var(--color-border-strong);
+}
+
+.product__badge--off {
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.product__meta {
+  font-size: var(--text-small);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.product__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.product__fav.is-fav .icon {
+  fill: var(--color-flame-red);
+  stroke: var(--color-flame-red);
+}
+
+/* Reveal states live in product-motion.js (GSAP, per-category patterns);
+   category section heights live in product-experience.css. */
+
+/* Desktop editorial variants — media placement only, content order untouched */
+@media (min-width: 1024px) {
+  .product {
+    align-items: center;
+    column-gap: var(--space-9);
+  }
+
+  .product--image-right {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    grid-template-areas: 'content media';
+  }
+
+  .product--image-left {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    grid-template-areas: 'media content';
+  }
+
+  .product--image-right .product__media,
+  .product--image-left .product__media {
+    grid-area: media;
+    align-self: center;
+  }
+
+  .product--image-right .product__content,
+  .product--image-left .product__content {
+    grid-area: content;
+  }
+
+  .product--centered {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+  }
+
+  .product--centered .product__media {
+    max-width: 44rem;
+  }
+
+  .product--centered .product__content {
+    justify-items: center;
+    text-align: center;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   ORDER SHEET
+   -------------------------------------------------------------------------- */
+
+.order-sheet[hidden] {
+  display: none;
+}
+
+.order-sheet__panel {
+  max-width: 32rem;
+  margin-inline: auto;
+}
+
+.order-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.order-sheet__title {
+  font-size: 1.15rem;
+}
+
+.order-sheet__body {
+  display: grid;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+}
+
+.order-sheet__platforms {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.order-sheet__platform {
+  width: 100%;
+}
+
+.order-sheet__empty-title {
+  color: var(--color-text-primary);
+}
+
+.order-sheet__empty-hint {
+  font-size: var(--text-small);
+}
+
+/* Scroll lock while the sheet is open (Lenis also stopped in JS) */
+.sheet-open {
+  overflow: hidden;
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex" />
+  <title>404 — FLIP BURGER</title>
+  <meta name="theme-color" content="#0d0906" />
+  <meta name="color-scheme" content="dark" />
+  <!--
+    Self-contained by design: GitHub Pages serves this for any unknown path,
+    so it cannot rely on hashed bundles or fixed relative asset paths. Inline
+    everything; compute the site-root link at runtime (works on project pages,
+    user pages and custom domains).
+  -->
+  <style>
+    :root { color-scheme: dark; }
+    * { margin: 0; box-sizing: border-box; }
+    body {
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding: 2rem;
+      background:
+        radial-gradient(46% 40% at 50% 78%, rgba(201, 45, 28, 0.22), transparent 68%),
+        radial-gradient(30% 26% at 50% 84%, rgba(226, 88, 34, 0.14), transparent 70%),
+        #0d0906;
+      color: #f2e6c9;
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      text-align: center;
+    }
+    .wrap { display: grid; gap: 1.25rem; justify-items: center; max-width: 32rem; }
+    .code {
+      font-size: clamp(4rem, 18vw, 8rem);
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      background: linear-gradient(180deg, #e25822, #921c10);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .brand { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.32em; color: #b4a488; }
+    h1 { font-size: clamp(1.25rem, 4vw, 1.75rem); font-weight: 800; }
+    p { color: #b4a488; line-height: 1.6; }
+    a.home {
+      display: inline-flex;
+      align-items: center;
+      min-height: 3rem;
+      padding: 0 1.75rem;
+      border-radius: 0.625rem;
+      background: linear-gradient(180deg, #bf2718, #921c10);
+      color: #f2e6c9;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 6px 18px rgba(6, 3, 2, 0.45);
+    }
+    a.home:focus-visible { outline: 2px solid #f6a81c; outline-offset: 3px; }
+    .en { color: #9a958c; font-size: 0.9rem; }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <span class="brand">FLIP BURGER</span>
+    <span class="code">404</span>
+    <h1>الصفحة مش موجودة</h1>
+    <p>يمكن الرابط قديم أو اتغيّر. ارجع للرئيسية وكمّل طلبك.<br /><span class="en">This page could not be found.</span></p>
+    <a class="home" id="home" href="/">العودة للرئيسية · Home</a>
+  </main>
+  <script>
+    // Site root = origin + first path segment (repo base on project pages),
+    // or just origin on user pages / custom domains.
+    (function () {
+      var seg = location.pathname.split('/').filter(Boolean)[0];
+      var isProjectPage = /\.github\.io$/.test(location.hostname) && seg;
+      document.getElementById('home').href = isProjectPage ? '/' + seg + '/' : '/';
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,157 @@
+/* ==========================================================================
+   FLIP BURGER — DESIGN TOKENS
+   Single source of truth. All values extracted from the official FLIP
+   BURGER logo and packaging box artwork (matte black base, flame red ink,
+   burnt orange, warm yellow bolts, vintage cream lettering).
+   --------------------------------------------------------------------------
+   Sections: COLOR · GRADIENTS · TYPOGRAPHY · SPACING · LAYOUT · RADIUS ·
+             SHADOWS · MOTION · Z-INDEX · TOUCH
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------
+     COLOR — layered warm blacks (never flat #000), print-ink fire hues
+     ------------------------------------------------------------------ */
+  --color-black: #0d0906;             /* matte black base */
+  --color-charcoal: #17100b;          /* smoke-swirl dark */
+  --color-surface: #1e150e;           /* content panels */
+  --color-surface-elevated: #281c13;  /* raised panels, sheets, modals */
+
+  --color-flame-red: #c92d1c;         /* logo ring / flame — printed ink */
+  --color-flame-red-deep: #921c10;    /* gradient base, pressed states */
+  --color-fire-orange: #e25822;       /* flame mids */
+  --color-warm-yellow: #f6a81c;       /* lightning bolts, flame tips */
+  --color-vintage-cream: #f2e6c9;     /* distressed lettering */
+
+  --color-text-primary: var(--color-vintage-cream);
+  --color-text-secondary: #b4a488;    /* muted warm — ≥6:1 on all surfaces */
+
+  --color-border: rgba(242, 230, 201, 0.14);
+  --color-border-strong: rgba(242, 230, 201, 0.28);
+  --color-shadow: rgba(6, 3, 2, 0.55);
+  --color-overlay: rgba(10, 6, 4, 0.82);
+
+  /* Button-safe red pair: cream label ≥4.8:1 (WCAG AA normal text) */
+  --color-btn-red-top: #bf2718;
+  --color-btn-red-bottom: var(--color-flame-red-deep);
+
+  /* ------------------------------------------------------------------
+     GRADIENTS
+     ------------------------------------------------------------------ */
+  --grad-flame: linear-gradient(180deg, var(--color-btn-red-top) 0%, var(--color-btn-red-bottom) 100%);
+  --grad-ember: linear-gradient(120deg, var(--color-fire-orange) 0%, var(--color-warm-yellow) 100%);
+  --grad-char: linear-gradient(180deg, var(--color-surface-elevated) 0%, var(--color-surface) 100%);
+  --grad-heat-line: linear-gradient(90deg, transparent, var(--color-flame-red) 20%, var(--color-warm-yellow) 50%, var(--color-flame-red) 80%, transparent);
+
+  /* ------------------------------------------------------------------
+     TYPOGRAPHY
+     Self-hosted (@fontsource, bundled at build time — no runtime CDN).
+     Anton = temporary licensed OFL stand-in for the distressed display
+     lettering; swap here once a custom brand display font exists.
+     ------------------------------------------------------------------ */
+  --font-display-en: 'Anton';
+  --font-display-ar: 'Almarai';
+  --font-display: var(--font-display-en), var(--font-display-ar), 'Arial Narrow', Impact, sans-serif;
+  --font-body: 'Archivo', 'Almarai', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
+
+  /* Fluid type scale */
+  --text-hero: clamp(3rem, 7.5vw + 1rem, 6.5rem);
+  --text-title: clamp(1.875rem, 3vw + 0.75rem, 3.25rem);
+  --text-product: clamp(1.25rem, 1.2vw + 0.9rem, 1.75rem);
+  --text-price: clamp(1.125rem, 1vw + 0.85rem, 1.5rem);
+  --text-label: 0.75rem;
+  --text-small: 0.875rem;
+
+  /* ------------------------------------------------------------------
+     SPACING — 4px-anchored scale
+     ------------------------------------------------------------------ */
+  --space-1: 0.25rem;   /*   4px */
+  --space-2: 0.5rem;    /*   8px */
+  --space-3: 0.75rem;   /*  12px */
+  --space-4: 1rem;      /*  16px */
+  --space-5: 1.5rem;    /*  24px */
+  --space-6: 2rem;      /*  32px */
+  --space-7: 3rem;      /*  48px */
+  --space-8: 4rem;      /*  64px */
+  --space-9: 6rem;      /*  96px */
+  --space-10: 8rem;     /* 128px */
+
+  /* ------------------------------------------------------------------
+     LAYOUT
+     Grid columns are applied by .grid (utilities.css):
+     mobile 4 · ≥768px 8 · ≥1024px 12
+     ------------------------------------------------------------------ */
+  --container-max: 80rem;      /* 1280px */
+  --container-narrow: 60rem;   /*  960px */
+  --container-pad: clamp(1rem, 4vw, 2.5rem);
+  --grid-gap: clamp(0.75rem, 2vw, 1.5rem);
+
+  /* ------------------------------------------------------------------
+     RADIUS — bold and structured, like the packaging. No over-rounding.
+     ------------------------------------------------------------------ */
+  --radius-sm: 0.375rem;   /*  6px — chips, inputs */
+  --radius-md: 0.625rem;   /* 10px — buttons */
+  --radius-lg: 1rem;       /* 16px — panels, sheets */
+  --radius-pill: 999px;
+
+  /* ------------------------------------------------------------------
+     SHADOWS & GLOW
+     ------------------------------------------------------------------ */
+  --shadow-soft:
+    0 2px 8px rgba(6, 3, 2, 0.35),
+    0 8px 24px rgba(6, 3, 2, 0.35);
+  --shadow-elevated:
+    0 4px 12px rgba(6, 3, 2, 0.45),
+    0 16px 48px rgba(6, 3, 2, 0.6);
+  --shadow-inner: inset 0 2px 6px rgba(6, 3, 2, 0.5);
+  --glow-fire:
+    0 0 20px rgba(201, 45, 28, 0.28),
+    0 0 48px rgba(226, 88, 34, 0.12);
+  --edge-highlight: inset 0 1px 0 rgba(242, 230, 201, 0.05);
+
+  /* ------------------------------------------------------------------
+     MOTION — heavy, smooth, controlled, cinematic. Never bouncy.
+     ------------------------------------------------------------------ */
+  --motion-fast: 160ms;      /* presses, hovers, toggles */
+  --motion-standard: 340ms;  /* panel & state transitions */
+  --motion-reveal: 850ms;    /* premium content reveals */
+  --motion-ambient: 2600ms;  /* ember glow, smoke drift */
+
+  --ease-out-heavy: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cinematic: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ------------------------------------------------------------------
+     Z-INDEX REGISTRY
+     ------------------------------------------------------------------ */
+  --z-below: -1;
+  --z-base: 0;
+  --z-texture: 1;
+  --z-content: 2;
+  --z-nav: 100;
+  --z-sticky: 150;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-boot: 500;
+
+  /* ------------------------------------------------------------------
+     TOUCH
+     ------------------------------------------------------------------ */
+  --tap-target: 2.75rem; /* 44px minimum */
+  --control-height: 3rem; /* 48px default control */
+}
+
+/* Reduced motion: collapse every motion token so any transition/animation
+   built on them becomes effectively instant. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0.01ms;
+    --motion-standard: 0.01ms;
+    --motion-reveal: 0.01ms;
+    --motion-ambient: 0.01ms;
+  }
+}
