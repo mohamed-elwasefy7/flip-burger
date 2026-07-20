@@ -1,163 +1,133 @@
 /**
- * Product reveal motion + burger parallax.
+ * Scene-aware product motion.
  *
- * - One IntersectionObserver drives reveals (no per-section ScrollTrigger).
- * - Four distinct category patterns — never the same stagger 29 times:
- *     burgers    masked clip reveal, 1.04→1 settle, vertical title
- *     appetizers quicker tight stagger, small rise
- *     party-box  centered scale settle
- *     drinks     calm single fade/rise
- * - Parallax: burgers only, desktop + motion-OK, transform-only scrub.
- * - will-change applied at animation start, cleared on complete.
- * - dispose() reverts everything (used before every language re-render).
- * - Reduced motion / hidden tab: content set visible instantly.
+ * One IntersectionObserver reveals each `.product` with a timeline chosen by
+ * its `data-scene` — so no two scene types animate the same way. Desktop +
+ * motion-OK adds restrained parallax (image drifts inside its frame, ghost
+ * type counter-moves). Magnetic buttons wired here too.
+ *
+ * Contract preserved from the previous version: returns { dispose() }, adds
+ * `.is-revealed` (CSS glow hooks), reduced-motion / hidden-tab show everything
+ * instantly, transform/opacity only, will-change cleared on complete.
  */
 
-const REVEAL_BASE = 0.85;
+import { initMagnetic } from '../core/fx.js';
 
-function contentChildren(section) {
-  return [...section.querySelector('.product__content').children];
-}
+const REVEAL = 0.9;
 
-function markRevealed(section) {
-  section.classList.add('is-revealed'); // CSS hook (burger glow etc.)
+const media = (s) => s.querySelector('.product__media');
+const items = (s) => [...s.querySelectorAll('[data-pc]')];
+const ghost = (s) => s.querySelector('.product__ghost');
+const img = (s) => s.querySelector('.product__img, .product__media-inner');
+
+function markRevealed(s) {
+  s.classList.add('is-revealed');
 }
 
 export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion }) {
   const sections = [...listMount.querySelectorAll('.product')];
   if (!sections.length) return { dispose() {} };
 
-  // Reduced motion: no hiding, no timelines, glow handled statically by CSS.
+  initMagnetic({ gsap, reduceMotion, root: listMount });
+
   if (reduceMotion) {
     sections.forEach(markRevealed);
     return { dispose() {} };
   }
 
   const ctx = gsap.context(() => {
-    const instant = document.hidden; // rAF suspended → show synchronously
+    const instant = document.hidden;
 
-    for (const section of sections) {
+    for (const s of sections) {
       if (instant) {
-        markRevealed(section);
+        markRevealed(s);
         continue;
       }
-      gsap.set(section.querySelector('.product__media'), { autoAlpha: 0 });
-      gsap.set(contentChildren(section), { autoAlpha: 0 });
+      gsap.set(media(s), { autoAlpha: 0 });
+      gsap.set(items(s), { autoAlpha: 0 });
+      if (ghost(s)) gsap.set(ghost(s), { autoAlpha: 0 });
     }
 
-    const reveal = (section) => {
-      markRevealed(section);
-      const media = section.querySelector('.product__media');
-      const items = contentChildren(section);
-      const cat = section.closest('.menu-category')?.dataset.cat || 'burgers';
-      const done = (els) => () => gsap.set(els, { clearProps: 'all' });
+    const reveal = (s) => {
+      markRevealed(s);
+      const scene = s.dataset.scene || 'stacked';
+      const m = media(s);
+      const its = items(s);
+      const g = ghost(s);
+      const finish = () => gsap.set([m, ...its, g].filter(Boolean), { clearProps: 'willChange' });
+      gsap.set([m, ...its, g].filter(Boolean), { willChange: 'transform, opacity' });
 
-      gsap.set([media, ...items], { willChange: 'transform, opacity' });
+      const tl = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: finish });
 
-      const tl = gsap.timeline({ onComplete: done([media, ...items]) });
+      // Media entrance varies by scene.
+      const mediaFrom = {
+        stacked: { autoAlpha: 0, scale: 1.08, yPercent: 6 },
+        split: { autoAlpha: 0, xPercent: 14, clipPath: 'inset(0 0 0 20%)' },
+        fullbleed: { autoAlpha: 0, scale: 1.12 },
+        twin: { autoAlpha: 0, scale: 1.1, yPercent: 8 },
+        party: { autoAlpha: 0, scale: 1.14, clipPath: 'inset(10% 6% 10% 6%)' },
+        drink: { autoAlpha: 0, y: 26 },
+      }[scene] || { autoAlpha: 0, y: 24 };
 
-      switch (cat) {
-        case 'appetizers':
-          tl.fromTo(
-            media,
-            { autoAlpha: 0, y: 24 },
-            { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.7, ease: 'power3.out' }
-          ).fromTo(
-            items,
-            { autoAlpha: 0, y: 18 },
-            { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.55, ease: 'power2.out', stagger: 0.06 },
-            '-=55%'
-          );
-          break;
+      tl.fromTo(m, mediaFrom, {
+        autoAlpha: 1, scale: 1, x: 0, y: 0, xPercent: 0, yPercent: 0,
+        clipPath: 'inset(0% 0% 0% 0%)',
+        duration: scene === 'drink' ? REVEAL * 0.7 : REVEAL * 1.25,
+      });
 
-        case 'party-box':
-          tl.fromTo(
-            media,
-            { autoAlpha: 0, scale: 1.06 },
-            { autoAlpha: 1, scale: 1, duration: REVEAL_BASE * 1.1, ease: 'power3.out' }
-          ).fromTo(
-            items,
-            { autoAlpha: 0, y: 20 },
-            { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.6, ease: 'power2.out', stagger: 0.07 },
-            '-=60%'
-          );
-          break;
-
-        case 'drinks':
-          tl.fromTo(
-            [media, ...items],
-            { autoAlpha: 0, y: 16 },
-            { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.55, ease: 'power2.out', stagger: 0.04 }
-          );
-          break;
-
-        default: // burgers — strongest treatment
-          tl.fromTo(
-            media,
-            { autoAlpha: 0, scale: 1.04, clipPath: 'inset(10% 6% 10% 6%)' },
-            {
-              autoAlpha: 1,
-              scale: 1,
-              clipPath: 'inset(0% 0% 0% 0%)',
-              duration: REVEAL_BASE * 1.25,
-              ease: 'power3.out',
-            }
-          )
-            .fromTo(
-              items.slice(0, 2), // category label + title: vertical reveal
-              { autoAlpha: 0, y: 34 },
-              { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.8, ease: 'power3.out', stagger: 0.09 },
-              '-=70%'
-            )
-            .fromTo(
-              items.slice(2),
-              { autoAlpha: 0, y: 20 },
-              { autoAlpha: 1, y: 0, duration: REVEAL_BASE * 0.6, ease: 'power2.out', stagger: 0.06 },
-              '-=50%'
-            );
+      if (g) {
+        tl.fromTo(g, { autoAlpha: 0, yPercent: scene === 'split' ? 0 : 18, xPercent: scene === 'split' ? -8 : 0 },
+          { autoAlpha: 1, yPercent: 0, xPercent: 0, duration: REVEAL }, '-=85%');
       }
+
+      // Content: staggered, direction depends on scene rhythm.
+      const contentFrom =
+        scene === 'split' ? { autoAlpha: 0, x: 30 }
+        : scene === 'drink' ? { autoAlpha: 0, y: 16 }
+        : { autoAlpha: 0, yPercent: 40 };
+      tl.fromTo(
+        its,
+        contentFrom,
+        {
+          autoAlpha: 1, x: 0, y: 0, yPercent: 0,
+          duration: scene === 'drink' ? REVEAL * 0.55 : REVEAL * 0.7,
+          stagger: scene === 'party' ? 0.11 : scene === 'drink' ? 0.05 : 0.07,
+        },
+        g ? '-=70%' : '-=60%'
+      );
     };
 
     const seen = new WeakSet();
     const io = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting || seen.has(entry.target)) continue;
-          seen.add(entry.target);
-          io.unobserve(entry.target);
-          reveal(entry.target);
+        for (const e of entries) {
+          if (!e.isIntersecting || seen.has(e.target)) continue;
+          seen.add(e.target);
+          io.unobserve(e.target);
+          reveal(e.target);
         }
       },
-      { rootMargin: '0px 0px -12% 0px', threshold: 0.2 }
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.18 }
     );
     if (!instant) sections.forEach((s) => io.observe(s));
 
-    // Parallax — burgers only, desktop + motion-OK. Small, transform-only.
+    // Parallax — desktop + motion-OK. Food drifts inside its frame; ghost
+    // counter-moves for depth. Skip drinks (calm) and placeholders.
     const mm = gsap.matchMedia();
-    mm.add(
-      { desktop: '(min-width: 1024px)', motionOK: '(prefers-reduced-motion: no-preference)' },
-      (mmCtx) => {
-        if (!(mmCtx.conditions.desktop && mmCtx.conditions.motionOK)) return;
-        for (const section of listMount.querySelectorAll('.menu-category--burgers .product')) {
-          gsap.to(section.querySelector('.product__media'), {
-            y: -22,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: section,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: true,
-            },
-          });
-        }
+    mm.add({ desktop: '(min-width: 1024px)', ok: '(prefers-reduced-motion: no-preference)' }, (c) => {
+      if (!(c.conditions.desktop && c.conditions.ok)) return;
+      for (const s of sections) {
+        if (s.dataset.scene === 'drink') continue;
+        const scrub = { ease: 'none', scrollTrigger: { trigger: s, start: 'top bottom', end: 'bottom top', scrub: true } };
+        const im = img(s);
+        if (im) gsap.fromTo(im, { yPercent: -6 }, { yPercent: 6, ...scrub });
+        const g = ghost(s);
+        if (g) gsap.fromTo(g, { yPercent: 10 }, { yPercent: -10, ...scrub });
       }
-    );
+    });
 
-    // Positions can shift once late images decode.
     const onLoad = () => ScrollTrigger.refresh();
-    if (document.readyState !== 'complete') {
-      window.addEventListener('load', onLoad, { once: true });
-    }
+    if (document.readyState !== 'complete') window.addEventListener('load', onLoad, { once: true });
 
     return () => {
       io.disconnect();
@@ -165,9 +135,5 @@ export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion
     };
   }, listMount);
 
-  return {
-    dispose() {
-      ctx.revert(); // kills timelines, matchMedia, ScrollTriggers, listeners
-    },
-  };
+  return { dispose: () => ctx.revert() };
 }

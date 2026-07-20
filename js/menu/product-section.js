@@ -1,14 +1,16 @@
 /**
- * Reusable product section renderer.
+ * Cinematic product scene renderer.
  *
- * MOBILE DOM ORDER — ABSOLUTE RULE (identical for every product):
+ * MOBILE DOM ORDER — ABSOLUTE RULE (identical for every product & scene):
  *   1 image · 2 category label · 3 name · 4 subtitle · 5 description ·
- *   6 ingredients · 7 price · 8 order CTA · 9 favorite/share controls
- * The markup is authored in exactly that order; desktop layout variants
- * (image-right / image-left / centered from menu.json) re-place the media
- * via grid-template-areas only — never via `order`.
+ *   6 ingredients · 7 badges/meta · 8 price · 9 order CTA · 10 fav/share
+ * Content children are authored in exactly that order. Scenes re-compose the
+ * MEDIA vs CONTENT placement via CSS grid/absolute on desktop only — never
+ * via `order`, never reordering the DOM. The giant "ghost" name is decorative
+ * (aria-hidden, absolute, desktop-only) and never affects reading order.
  *
- * Every optional field degrades: empty → the node is not rendered at all.
+ * Scene comes from menu-renderer (data-driven). Every optional field degrades:
+ * empty → the node is not rendered.
  */
 
 import { str, pickText } from '../core/i18n.js';
@@ -20,9 +22,8 @@ function esc(text) {
   return div.innerHTML;
 }
 
-const LAYOUTS = new Set(['image-right', 'image-left', 'centered']);
-
-const MEDIA_SIZES = '(min-width: 1024px) 44vw, 92vw';
+const SCENES = new Set(['stacked', 'split', 'fullbleed', 'twin', 'party', 'drink']);
+const MEDIA_SIZES = '(min-width: 1024px) 48vw, 92vw';
 
 function mediaMarkup(product, { eager = false } = {}) {
   const { images = {} } = product;
@@ -30,49 +31,31 @@ function mediaMarkup(product, { eager = false } = {}) {
   const loadAttrs = eager
     ? 'loading="eager" fetchpriority="high" decoding="async"'
     : 'loading="lazy" decoding="async"';
-
-  // Category treatment: dark food photos blend into the section; white
-  // drink photos sit inside a framed dark plate (image pixels untouched).
   const variant = product.category === 'drinks' ? 'product__media--frame' : 'product__media--blend';
 
-  // Responsive set form (Part 5+): { base, widths[], fallback, w, h }
-  // → AVIF srcset + WebP srcset + JPG fallback.
+  let inner;
   if (images.base && Array.isArray(images.widths) && images.widths.length) {
     const srcset = (ext) => images.widths.map((w) => `${esc(images.base)}-${w}.${ext} ${w}w`).join(', ');
-    return `
-      <div class="product__media ${variant}">
-        <picture>
-          <source type="image/avif" srcset="${srcset('avif')}" sizes="${MEDIA_SIZES}" />
-          <source type="image/webp" srcset="${srcset('webp')}" sizes="${MEDIA_SIZES}" />
-          <img src="${esc(images.fallback)}" alt="${esc(alt)}"
-            width="${images.w || 1280}" height="${images.h || 1280}" ${loadAttrs} />
-        </picture>
-      </div>`;
+    inner = `
+      <picture>
+        <source type="image/avif" srcset="${srcset('avif')}" sizes="${MEDIA_SIZES}" />
+        <source type="image/webp" srcset="${srcset('webp')}" sizes="${MEDIA_SIZES}" />
+        <img class="product__img" src="${esc(images.fallback)}" alt="${esc(alt)}"
+          width="${images.w || 1280}" height="${images.h || 1280}" ${loadAttrs} />
+      </picture>`;
+  } else {
+    const fallback = images.fallback || images.desktop || images.tablet || images.mobile;
+    if (fallback) {
+      inner = `<picture><img class="product__img" src="${esc(fallback)}" alt="${esc(alt)}" width="1200" height="900" ${loadAttrs} /></picture>`;
+    } else {
+      return `
+        <div class="product__media product__media--placeholder tx tx-grain" role="img" aria-label="${esc(alt)}">
+          <span class="label label--muted product__media-note">${esc(str('menu.placeholder'))}</span>
+        </div>`;
+    }
   }
 
-  // Legacy flat form (Part 4 schema): explicit per-breakpoint files.
-  const fallback = images.fallback || images.desktop || images.tablet || images.mobile;
-  if (fallback) {
-    const sources = [
-      images.desktop && `<source media="(min-width: 1024px)" srcset="${esc(images.desktop)}" />`,
-      images.tablet && `<source media="(min-width: 768px)" srcset="${esc(images.tablet)}" />`,
-      images.mobile && `<source srcset="${esc(images.mobile)}" />`,
-    ]
-      .filter(Boolean)
-      .join('');
-    return `
-      <div class="product__media">
-        <picture>${sources}
-          <img src="${esc(fallback)}" alt="${esc(alt)}" width="1200" height="900" ${loadAttrs} />
-        </picture>
-      </div>`;
-  }
-
-  // Premium neutral placeholder — no fake food, no broken image icons.
-  return `
-    <div class="product__media product__media--placeholder tx tx-grain" role="img" aria-label="${esc(alt)}">
-      <span class="label label--muted product__media-note">${esc(str('menu.placeholder'))}</span>
-    </div>`;
+  return `<div class="product__media ${variant}"><div class="product__media-inner">${inner}</div></div>`;
 }
 
 function badgesMarkup(product) {
@@ -86,14 +69,14 @@ function badgesMarkup(product) {
     badges.push(`<span class="product__badge product__badge--featured">${esc(str('menu.badgeFeatured'))}</span>`);
   if (product.available === false)
     badges.push(`<span class="product__badge product__badge--off">${esc(str('menu.unavailable'))}</span>`);
-  return badges.length ? `<div class="product__badges">${badges.join('')}</div>` : '';
+  return badges.length ? `<div class="product__badges" data-pc>${badges.join('')}</div>` : '';
 }
 
 function metaMarkup(product) {
   const bits = [];
   if (product.calories != null) bits.push(`${product.calories} ${esc(str('menu.calories'))}`);
   if (product.prepTime) bits.push(`${esc(product.prepTime)} ${esc(str('menu.prepTime'))}`);
-  return bits.length ? `<p class="product__meta">${bits.join(' · ')}</p>` : '';
+  return bits.length ? `<p class="product__meta" data-pc>${bits.join(' · ')}</p>` : '';
 }
 
 function pickList(product, base) {
@@ -103,45 +86,54 @@ function pickList(product, base) {
   return (primary?.length ? primary : fallback) || [];
 }
 
-export function renderProduct(product, category, { eager = false } = {}) {
+export function renderProduct(product, category, { eager = false, scene = 'stacked' } = {}) {
+  scene = SCENES.has(scene) ? scene : 'stacked';
   const name = pickText(product, 'name');
   const subtitle = pickText(product, 'subtitle');
   const description = pickText(product, 'description');
   const ingredientsList = pickList(product, 'ingredients');
   const catName = pickText(category, 'name');
-  const layout = LAYOUTS.has(product.layout) ? product.layout : 'centered';
   const fav = isFavorite(product.id);
   const unavailable = product.available === false;
 
   const article = document.createElement('article');
-  article.className = `product product--${layout} product--bg-${esc(product.background)} product--accent-${esc(product.accent)}`;
+  article.className = `product product--scene-${scene} product--accent-${esc(product.accent)}`;
   article.id = `product-${product.id}`;
   article.dataset.category = category.id;
   article.dataset.productId = product.id;
+  article.dataset.scene = scene;
   article.setAttribute('aria-labelledby', `product-title-${product.id}`);
 
+  // Decorative giant name behind the product (desktop only, aria-hidden).
+  const ghost =
+    scene === 'stacked' || scene === 'split' || scene === 'twin'
+      ? `<span class="product__ghost" aria-hidden="true">${esc(name)}</span>`
+      : '';
+
   article.innerHTML = `
+    ${ghost}
     ${mediaMarkup(product, { eager })}
     <div class="product__content">
-      <span class="label product__cat">${esc(catName)}</span>
-      <h3 class="product-name product__title" id="product-title-${product.id}">${esc(name)}</h3>
-      ${subtitle ? `<p class="product__subtitle">${esc(subtitle)}</p>` : ''}
-      ${description ? `<p class="body-copy product__desc">${esc(description)}</p>` : ''}
+      <span class="label product__cat" data-pc>${esc(catName)}</span>
+      <h3 class="product-name product__title" id="product-title-${product.id}" data-pc>${esc(name)}</h3>
+      ${subtitle ? `<p class="product__subtitle" data-pc>${esc(subtitle)}</p>` : ''}
+      ${description ? `<p class="body-copy product__desc" data-pc>${esc(description)}</p>` : ''}
       ${
         ingredientsList.length
-          ? `<ul class="product__ingredients">${ingredientsList.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
+          ? `<ul class="product__ingredients" data-pc>${ingredientsList.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
           : ''
       }
       ${badgesMarkup(product)}
       ${metaMarkup(product)}
       ${
         product.price != null
-          ? `<p class="price product__price">${esc(String(product.price))}<span class="price__currency">${esc(product.currency)}</span></p>`
+          ? `<p class="price product__price" data-pc>${esc(String(product.price))}<span class="price__currency">${esc(product.currency)}</span></p>`
           : ''
       }
-      <div class="product__actions">
-        <button class="btn btn--primary product__order" type="button" data-order ${unavailable ? 'disabled' : ''}>
-          ${esc(str('menu.order'))}
+      <div class="product__actions" data-pc>
+        <button class="btn btn--primary product__order magnetic" type="button" data-order ${unavailable ? 'disabled' : ''}>
+          <span>${esc(str('menu.order'))}</span>
+          <svg class="icon icon--sm product__order-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg>
         </button>
         <button class="btn btn--secondary btn--icon product__fav${fav ? ' is-fav' : ''}" type="button" data-fav
           aria-pressed="${fav}" aria-label="${esc(str(fav ? 'menu.favRemove' : 'menu.favAdd'))}">

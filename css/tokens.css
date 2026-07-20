@@ -56,11 +56,13 @@
 
   --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
 
-  /* Fluid type scale */
-  --text-hero: clamp(3rem, 7.5vw + 1rem, 6.5rem);
-  --text-title: clamp(1.875rem, 3vw + 0.75rem, 3.25rem);
-  --text-product: clamp(1.25rem, 1.2vw + 0.9rem, 1.75rem);
-  --text-price: clamp(1.125rem, 1vw + 0.85rem, 1.5rem);
+  /* Fluid type scale — cinematic, oversized display */
+  --text-hero: clamp(3.4rem, 13vw, 10rem);      /* FLIP BURGER wordmark */
+  --text-title: clamp(2.4rem, 7.5vw, 6rem);     /* category headings */
+  --text-product: clamp(2rem, 5.5vw, 4.75rem);  /* product names — huge */
+  --text-ghost: clamp(4.5rem, 22vw, 17rem);     /* giant type behind product */
+  --text-price: clamp(1.25rem, 1.2vw + 0.9rem, 1.75rem);
+  --text-lead: clamp(1.05rem, 0.9rem + 0.7vw, 1.375rem); /* supporting lead copy */
   --text-label: 0.75rem;
   --text-small: 0.875rem;
 
@@ -123,6 +125,18 @@
   --ease-cinematic: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-entry: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ------------------------------------------------------------------
+     CATEGORY IDENTITY — overridden per .menu-category--<id>. Drives the
+     ambient glow, section tone and accent so each category reads distinct.
+     Defaults = burgers (hottest).
+     ------------------------------------------------------------------ */
+  --cat-glow-1: rgba(201, 45, 28, 0.30);   /* molten red */
+  --cat-glow-2: rgba(226, 88, 34, 0.20);   /* fire orange */
+  --cat-accent: var(--color-flame-red);
+  --cat-tone: #140b06;                     /* section base wash */
+  --cat-ember: 1;                          /* ember intensity multiplier */
 
   /* ------------------------------------------------------------------
      Z-INDEX REGISTRY

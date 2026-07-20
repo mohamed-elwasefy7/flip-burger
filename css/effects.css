@@ -1,0 +1,179 @@
+/* ==========================================================================
+   FLIP BURGER — EFFECTS
+   Cinematic atmosphere + kinetic primitives shared across hero and scenes:
+   fire glow, drifting smoke, ember canvas, film grain, light sweep, magnetic
+   buttons, and the declarative reveal states used by js/core/reveal.js.
+   All transform/opacity only. Everything degrades under reduced motion.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   DECLARATIVE REVEAL — [data-enter] elements start hidden (JS only), then
+   js/core/reveal.js animates them in on scroll. No-JS + reduced-motion show
+   everything immediately.
+   -------------------------------------------------------------------------- */
+.js [data-enter] {
+  will-change: transform, opacity;
+}
+.js [data-enter="mask"] > *,
+.js [data-enter="mask"] {
+  opacity: 0;
+}
+.js [data-enter="rise"],
+.js [data-enter="fade"],
+.js [data-enter="clip"],
+.js [data-enter="scale"] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-enter] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    will-change: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   FIRE GLOW — layered radial molten light. Slow breathing pulse.
+   -------------------------------------------------------------------------- */
+.fx-glow {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 46% at 50% 62%, var(--cat-glow-1), transparent 66%),
+    radial-gradient(26% 32% at 50% 70%, var(--cat-glow-2), transparent 70%);
+  filter: blur(6px);
+  animation: fx-breathe calc(var(--motion-ambient) * 1.6) var(--ease-cinematic) infinite alternate;
+}
+
+@keyframes fx-breathe {
+  from { opacity: 0.75; transform: scale(1); }
+  to   { opacity: 1;    transform: scale(1.08); }
+}
+
+/* --------------------------------------------------------------------------
+   SMOKE — vast, slow, charcoal breaths that drift and rotate.
+   -------------------------------------------------------------------------- */
+.fx-smoke {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(70px);
+  opacity: 0.5;
+  will-change: transform;
+}
+.fx-smoke--a {
+  width: 60vmax; height: 60vmax;
+  inset-inline-start: -22vmax; bottom: -26vmax;
+  background: radial-gradient(circle, rgba(40, 28, 19, 0.6), transparent 65%);
+  animation: fx-drift-a calc(var(--motion-ambient) * 5) linear infinite alternate;
+}
+.fx-smoke--b {
+  width: 55vmax; height: 55vmax;
+  inset-inline-end: -20vmax; top: -18vmax;
+  background: radial-gradient(circle, rgba(23, 16, 11, 0.7), transparent 65%);
+  animation: fx-drift-b calc(var(--motion-ambient) * 6.5) linear infinite alternate;
+}
+
+@keyframes fx-drift-a {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  to   { transform: translate3d(7vmax, -6vmax, 0) rotate(24deg) scale(1.15); }
+}
+@keyframes fx-drift-b {
+  from { transform: translate3d(0, 0, 0) rotate(0deg) scale(1.1); }
+  to   { transform: translate3d(-6vmax, 5vmax, 0) rotate(-20deg) scale(1); }
+}
+
+/* --------------------------------------------------------------------------
+   FILM GRAIN — subtle animated noise, screen-wide.
+   -------------------------------------------------------------------------- */
+.fx-grain::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.05;
+  animation: fx-grain 0.7s steps(3) infinite;
+}
+@keyframes fx-grain {
+  0%   { transform: translate(0, 0); }
+  33%  { transform: translate(-3%, 2%); }
+  66%  { transform: translate(2%, -3%); }
+  100% { transform: translate(-1%, 1%); }
+}
+
+/* --------------------------------------------------------------------------
+   LIGHT SWEEP — a slow diagonal glint passing across a surface.
+   -------------------------------------------------------------------------- */
+.fx-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.fx-sweep::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  inset-inline-start: -40%;
+  width: 40%;
+  height: 220%;
+  background: linear-gradient(100deg, transparent, rgba(246, 168, 28, 0.10) 45%, rgba(242, 230, 201, 0.14) 50%, transparent 60%);
+  transform: rotate(8deg);
+  animation: fx-sweep calc(var(--motion-ambient) * 3) ease-in-out infinite;
+}
+@keyframes fx-sweep {
+  0%, 60% { transform: translateX(0) rotate(8deg); opacity: 0; }
+  70%     { opacity: 1; }
+  100%    { transform: translateX(340%) rotate(8deg); opacity: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   EMBER CANVAS — full-bleed particle field, driven by js/core/fx.js.
+   -------------------------------------------------------------------------- */
+.fx-embers {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   MAGNETIC BUTTON — desktop pointer follow (js/core/fx.js) + glow ring.
+   -------------------------------------------------------------------------- */
+.magnetic {
+  will-change: transform;
+}
+.btn--primary.magnetic::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: radial-gradient(60% 120% at 50% 120%, rgba(246, 168, 28, 0.45), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--motion-standard) var(--ease-out-heavy);
+  z-index: -1;
+}
+.btn--primary.magnetic:hover::after {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------------------
+   REDUCED MOTION — freeze ambient animation (glow stays lit, static).
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .fx-glow,
+  .fx-smoke,
+  .fx-grain::after,
+  .fx-sweep::before {
+    animation: none;
+  }
+  .fx-embers { display: none; }
+}

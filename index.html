@@ -135,20 +135,23 @@
 
   <main id="app" class="app">
 
-    <!-- HERO — DOM order IS the mobile order (absolute rule):
-         logo → slogan → support → visual → CTAs → scroll cue.
-         Desktop re-composes via grid-template-areas only. -->
-    <section class="hero" aria-labelledby="hero-slogan">
+    <!-- HERO — cinematic full-viewport. Layers back→front: atmosphere,
+         giant kinetic wordmark, dominant burger, woven copy. Mobile keeps a
+         brand-first vertical order (seal+wordmark → burger → copy → CTAs). -->
+    <section class="hero" aria-labelledby="hero-wordmark">
       <div class="hero__atmosphere" aria-hidden="true">
-        <div class="hero__glow"></div>
-        <div class="hero__smoke hero__smoke--a"></div>
-        <div class="hero__smoke hero__smoke--b"></div>
+        <div class="fx-glow hero__glow"></div>
+        <div class="fx-smoke fx-smoke--a"></div>
+        <div class="fx-smoke fx-smoke--b"></div>
+        <canvas class="fx-embers" id="hero-embers"></canvas>
+        <div class="fx-grain"></div>
       </div>
 
-      <div class="container hero__grid">
+      <div class="hero__inner">
         <img
-          class="hero__mark"
-          data-reveal="mark"
+          class="hero__seal"
+          id="hero-badge"
+          data-hero="seal"
           src="./assets/logo/logo-512.webp"
           alt="FLIP BURGER"
           width="512"
@@ -158,61 +161,63 @@
           vite-ignore
         />
 
-        <h1 class="display-hero hero__slogan" id="hero-slogan" data-reveal="slogan" data-i18n="hero.slogan">اقلب مزاجك</h1>
+        <h1 class="hero__wordmark" id="hero-wordmark">
+          <span class="hero__word" data-hero="w1">FLIP</span>
+          <span class="hero__word hero__word--outline" data-hero="w2">BURGER</span>
+        </h1>
 
-        <p class="body-copy body-copy--strong hero__support" data-reveal="support" data-i18n="hero.support">
-          برجر أمريكي على نار حقيقية — يوصلك حار من قلب الرياض.
-        </p>
-
-        <div class="hero__stage" data-reveal="stage" aria-hidden="true">
+        <div class="hero__stage" data-hero="stage" aria-hidden="true">
+          <div class="hero__stage-glow"></div>
           <picture>
             <source
+              type="image/avif"
+              srcset="./assets/images/menu/burger/red-hit-480.avif 480w, ./assets/images/menu/burger/red-hit-800.avif 800w, ./assets/images/menu/burger/red-hit-1280.avif 1280w"
+              sizes="(min-width: 1024px) 52vw, 88vw"
+              vite-ignore
+            />
+            <source
               type="image/webp"
-              srcset="./assets/images/flames-stage-800.webp 800w, ./assets/images/flames-stage-1600.webp 1600w"
-              sizes="(min-width: 1024px) 44vw, 92vw"
+              srcset="./assets/images/menu/burger/red-hit-480.webp 480w, ./assets/images/menu/burger/red-hit-800.webp 800w, ./assets/images/menu/burger/red-hit-1280.webp 1280w"
+              sizes="(min-width: 1024px) 52vw, 88vw"
+              vite-ignore
             />
             <img
-              class="hero__flames"
+              class="hero__burger"
               id="hero-flames-img"
-              src="./assets/images/flames-stage-1600.jpg"
+              src="./assets/images/menu/burger/red-hit-1280.jpg"
               alt=""
-              width="1600"
-              height="1048"
+              width="1280"
+              height="1280"
               decoding="async"
               loading="eager"
               vite-ignore
             />
           </picture>
-          <img
-            class="hero__badge"
-            id="hero-badge"
-            src="./assets/logo/logo-1024.webp"
-            alt=""
-            width="1024"
-            height="1024"
-            decoding="async"
-            vite-ignore
-          />
-          <div class="hero__embers" id="hero-embers"></div>
         </div>
 
-        <div class="hero__ctas" data-reveal="ctas">
-          <a class="btn btn--primary" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaPrimary">استكشف المنيو</a>
-          <a class="btn btn--secondary" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaSecondary">اطلب الآن</a>
-        </div>
+        <p class="hero__slogan" data-hero="slogan" data-i18n="hero.slogan">اقلب مزاجك</p>
 
-        <button
-          class="hero__cue"
-          id="scroll-cue"
-          type="button"
-          data-reveal="cue"
-          data-scroll-to="#menu"
-          data-i18n-aria="hero.scrollCue"
-          aria-label="انزل إلى المنيو"
-        >
-          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v14M6 13l6 6 6-6"/></svg>
-        </button>
+        <p class="hero__support" data-hero="support" data-i18n="hero.support">
+          برجر أمريكي على نار حقيقية — يوصلك حار من قلب الرياض.
+        </p>
+
+        <div class="hero__ctas" data-hero="ctas">
+          <a class="btn btn--primary magnetic" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaPrimary">استكشف المنيو</a>
+          <a class="btn btn--ghost" href="#menu" data-scroll-to="#menu" data-i18n="hero.ctaSecondary">اطلب الآن</a>
+        </div>
       </div>
+
+      <button
+        class="hero__cue"
+        id="scroll-cue"
+        type="button"
+        data-hero="cue"
+        data-scroll-to="#menu"
+        data-i18n-aria="hero.scrollCue"
+        aria-label="انزل إلى المنيو"
+      >
+        <span class="hero__cue-line"></span>
+      </button>
     </section>
 
     <!-- MENU ENTRY — heading + short intro (no second long intro). -->

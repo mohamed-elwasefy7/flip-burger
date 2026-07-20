@@ -116,51 +116,45 @@
 }
 
 /* --------------------------------------------------------------------------
-   PRODUCT SECTIONS
-   Mobile: single column in DOM order (image first, always).
+   PRODUCT — lean base. Scene composition lives in product-experience.css;
+   mobile is always a single column with image first.
    -------------------------------------------------------------------------- */
 
 .product {
+  position: relative;
   display: grid;
-  gap: var(--space-6);
+  gap: var(--space-5);
   max-width: var(--container-max);
   margin-inline: auto;
   padding: var(--space-8)
     max(var(--container-pad), env(safe-area-inset-right))
     var(--space-8)
     max(var(--container-pad), env(safe-area-inset-left));
-  transition: background-color var(--motion-standard) var(--ease-out-heavy);
 }
 
-/* Background mood per product (from menu.json) */
-.product--bg-black { background: var(--color-black); }
-.product--bg-charcoal { background: var(--color-charcoal); }
-.product--bg-surface { background: var(--color-surface); }
-
-/* Media */
+/* Media base — scenes set size/aspect; parallax moves the inner image. */
 .product__media {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--edge-highlight), var(--shadow-elevated);
 }
 
+.product__media-inner,
 .product__media picture,
-.product__media img {
+.product__img {
+  display: block;
   width: 100%;
   height: 100%;
 }
 
-.product__media img {
+.product__img {
   object-fit: cover;
-  display: block;
 }
 
 .product__media--placeholder {
   display: grid;
   place-items: center;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
   background:
     radial-gradient(60% 50% at 50% 60%, rgba(201, 45, 28, 0.08), transparent 70%),
     var(--grad-char);
@@ -175,16 +169,23 @@
 
 /* Content */
 .product__content {
+  position: relative;
+  z-index: 2;
   display: grid;
   gap: var(--space-3);
   align-content: center;
   justify-items: start;
-  max-width: 38rem;
+  max-width: 40rem;
+}
+
+.product__cat {
+  color: var(--cat-accent);
 }
 
 .product__subtitle {
   font-family: var(--font-body);
   font-weight: 600;
+  font-size: var(--text-lead);
   color: var(--color-fire-orange);
   letter-spacing: 0.04em;
 }
@@ -264,7 +265,30 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* Primary order CTA — bold, glowing, directional arrow */
+.product__order {
+  gap: var(--space-2);
+  padding-inline: var(--space-6);
+  box-shadow: var(--edge-highlight), 0 6px 20px rgba(6, 3, 2, 0.5), var(--glow-fire);
+}
+
+.product__order-arrow {
+  transition: transform var(--motion-fast) var(--ease-out-heavy);
+}
+
+.product__order:hover .product__order-arrow {
+  transform: translateX(0.25rem);
+}
+
+[dir='rtl'] .product__order-arrow {
+  transform: scaleX(-1);
+}
+
+[dir='rtl'] .product__order:hover .product__order-arrow {
+  transform: scaleX(-1) translateX(0.25rem);
 }
 
 .product__fav.is-fav .icon {
@@ -272,51 +296,7 @@
   stroke: var(--color-flame-red);
 }
 
-/* Reveal states live in product-motion.js (GSAP, per-category patterns);
-   category section heights live in product-experience.css. */
-
-/* Desktop editorial variants — media placement only, content order untouched */
-@media (min-width: 1024px) {
-  .product {
-    align-items: center;
-    column-gap: var(--space-9);
-  }
-
-  .product--image-right {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-    grid-template-areas: 'content media';
-  }
-
-  .product--image-left {
-    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-    grid-template-areas: 'media content';
-  }
-
-  .product--image-right .product__media,
-  .product--image-left .product__media {
-    grid-area: media;
-    align-self: center;
-  }
-
-  .product--image-right .product__content,
-  .product--image-left .product__content {
-    grid-area: content;
-  }
-
-  .product--centered {
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-  }
-
-  .product--centered .product__media {
-    max-width: 44rem;
-  }
-
-  .product--centered .product__content {
-    justify-items: center;
-    text-align: center;
-  }
-}
+/* Reveal + scene composition live in product-motion.js / product-experience.css. */
 
 /* --------------------------------------------------------------------------
    ORDER SHEET

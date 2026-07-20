@@ -13,12 +13,14 @@ import { toggleFavorite } from './favorites.js';
 import { shareProduct } from './share.js';
 import { initProductMotion } from './product-motion.js';
 import { initAtmosphere, setMood } from './menu-atmosphere.js';
+import { initReveal } from '../core/reveal.js';
 import { str, pickText } from '../core/i18n.js';
 
 let data = null;
 let ctx = null;
 let spy = null;
 let motion = null;
+let reveal = null;
 let productIndex = new Map();
 
 export async function initMenu({ lenis, gsap, ScrollTrigger, reduceMotion, bootDone }) {
@@ -28,7 +30,7 @@ export async function initMenu({ lenis, gsap, ScrollTrigger, reduceMotion, bootD
 
   ctx = { lenis, gsap, ScrollTrigger, reduceMotion };
   initOrderSheet({ lenis });
-  initAtmosphere(document.getElementById('menu-list'));
+  initAtmosphere(document.getElementById('menu-list'), { gsap, reduceMotion });
 
   try {
     data = await loadMenu();
@@ -84,14 +86,30 @@ function injectMenuSchema() {
   node.textContent = JSON.stringify(graph);
 }
 
+/**
+ * Deterministic cinematic scene per product (no consecutive repeats within a
+ * category; special-cased twins + category-specific rhythms).
+ */
+function sceneFor(product, category, indexInCat) {
+  if (product.id === 'black-twins') return 'twin';
+  if (category.id === 'party-box') return 'party';
+  if (category.id === 'drinks') return 'drink';
+  const rotation =
+    category.id === 'appetizers'
+      ? ['split', 'stacked', 'fullbleed']
+      : ['stacked', 'split', 'fullbleed'];
+  return rotation[indexInCat % rotation.length];
+}
+
 function categoryIntro(cat) {
   const intro = document.createElement('header');
   intro.className = 'category-intro';
   const desc = pickText(cat, 'description');
   intro.innerHTML = `
-    <h2 class="title-section category-intro__name">${escText(pickText(cat, 'name'))}</h2>
-    <hr class="heat-rule category-intro__rule" />
-    ${desc ? `<p class="body-copy category-intro__desc">${escText(desc)}</p>` : ''}`;
+    <span class="category-intro__kicker label" data-enter="rise">${escText(str('menu.catNavAria'))}</span>
+    <h2 class="title-section category-intro__name" data-enter="mask">${escText(pickText(cat, 'name'))}</h2>
+    <hr class="heat-rule category-intro__rule" data-enter="fade" data-enter-at="0.15" />
+    ${desc ? `<p class="body-copy category-intro__desc" data-enter="rise" data-enter-at="0.1">${escText(desc)}</p>` : ''}`;
   return intro;
 }
 
@@ -105,6 +123,7 @@ function render(navMount, listMount) {
   renderCategoryNav(navMount, data.categories, ctx);
 
   motion?.dispose();
+  reveal?.dispose();
   listMount.innerHTML = '';
   productIndex = new Map();
 
@@ -119,18 +138,20 @@ function render(navMount, listMount) {
 
     wrap.appendChild(categoryIntro(cat));
 
-    for (const product of data.byCategory.get(cat.id)) {
+    const products = data.byCategory.get(cat.id);
+    products.forEach((product, i) => {
       productIndex.set(product.id, product);
       // First product's image loads eagerly (likely near-viewport after the
       // hero); everything below lazy-loads.
-      wrap.appendChild(renderProduct(product, cat, { eager: first }));
+      wrap.appendChild(renderProduct(product, cat, { eager: first, scene: sceneFor(product, cat, i) }));
       first = false;
-    }
+    });
     listMount.appendChild(wrap);
   }
 
   observeSections(listMount);
   motion = initProductMotion({ listMount, gsap: ctx.gsap, ScrollTrigger: ctx.ScrollTrigger, reduceMotion: ctx.reduceMotion });
+  reveal = initReveal({ gsap: ctx.gsap, ScrollTrigger: ctx.ScrollTrigger, root: listMount, reduceMotion: ctx.reduceMotion });
 }
 
 /* Scroll spy: active category chip + ambient mood. Reveals live in

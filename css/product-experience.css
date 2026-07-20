@@ -1,20 +1,49 @@
 /* ==========================================================================
-   FLIP BURGER — PRODUCT EXPERIENCE (Part 6)
-   Category-driven cinematic layer over the menu engine:
-   ambient mood · category intros · per-category section systems ·
-   media blend/frame treatments. All deterministic (category + index),
-   zero randomness, transform/opacity motion only (see product-motion.js).
+   FLIP BURGER — PRODUCT EXPERIENCE (cinematic rebuild)
+   Category identity · ambient mood · 6 reusable product scenes.
+   Mobile = single column, image first, ghost hidden. Desktop re-composes
+   per scene via grid/absolute — never reordering the DOM.
    ========================================================================== */
 
 /* --------------------------------------------------------------------------
-   AMBIENT MOOD LAYER — one layer for the whole menu, cross-faded via
-   data-mood on .menu-zone (set by the scroll spy). No hard cuts.
+   CATEGORY IDENTITY — each category recolors the ambient glow, accent and
+   section tone, so scrolling between them visibly shifts the mood.
    -------------------------------------------------------------------------- */
-
-.menu-zone {
-  --amb-red: 0;
-  --amb-orange: 0;
+.menu-category--burgers {
+  --cat-glow-1: rgba(201, 45, 28, 0.34);
+  --cat-glow-2: rgba(226, 88, 34, 0.22);
+  --cat-accent: var(--color-flame-red);
+  --cat-tone: #150b06;
 }
+.menu-category--appetizers {
+  --cat-glow-1: rgba(226, 88, 34, 0.26);
+  --cat-glow-2: rgba(246, 168, 28, 0.16);
+  --cat-accent: var(--color-fire-orange);
+  --cat-tone: #17100a;
+}
+.menu-category--party-box {
+  --cat-glow-1: rgba(201, 45, 28, 0.30);
+  --cat-glow-2: rgba(246, 168, 28, 0.18);
+  --cat-accent: var(--color-warm-yellow);
+  --cat-tone: #180c07;
+}
+.menu-category--drinks {
+  --cat-glow-1: rgba(94, 20, 40, 0.28);   /* chilled burgundy cooldown */
+  --cat-glow-2: rgba(40, 60, 90, 0.14);
+  --cat-accent: #d98a3a;
+  --cat-tone: #0f0c10;
+}
+
+.menu-category {
+  position: relative;
+  overflow: hidden; /* clips the oversized ghost type + side glows — no page overflow */
+  background: linear-gradient(180deg, var(--cat-tone), var(--color-black));
+}
+
+/* --------------------------------------------------------------------------
+   AMBIENT MOOD LAYER — one cross-faded glow for the whole menu zone.
+   -------------------------------------------------------------------------- */
+.menu-zone { --amb-red: 0; --amb-orange: 0; }
 
 .menu-ambient {
   position: absolute;
@@ -23,44 +52,38 @@
   pointer-events: none;
   overflow: hidden;
 }
-
 .menu-ambient__red,
 .menu-ambient__orange {
   position: absolute;
   inset: -5%;
   opacity: 0;
-  transition: opacity calc(var(--motion-reveal) * 1.6) var(--ease-cinematic);
+  transition: opacity calc(var(--motion-reveal) * 1.8) var(--ease-cinematic);
 }
-
 .menu-ambient__red {
   background:
-    radial-gradient(42% 30% at 18% 30%, rgba(201, 45, 28, 0.16), transparent 70%),
-    radial-gradient(50% 34% at 85% 70%, rgba(146, 28, 16, 0.14), transparent 72%);
+    radial-gradient(44% 32% at 16% 28%, rgba(201, 45, 28, 0.18), transparent 70%),
+    radial-gradient(52% 36% at 86% 72%, rgba(146, 28, 16, 0.16), transparent 72%);
   opacity: var(--amb-red);
 }
-
 .menu-ambient__orange {
   background:
-    radial-gradient(40% 28% at 80% 25%, rgba(226, 88, 34, 0.13), transparent 70%),
-    radial-gradient(46% 30% at 15% 75%, rgba(246, 168, 28, 0.07), transparent 72%);
+    radial-gradient(42% 30% at 82% 24%, rgba(226, 88, 34, 0.15), transparent 70%),
+    radial-gradient(48% 32% at 14% 76%, rgba(246, 168, 28, 0.09), transparent 72%);
   opacity: var(--amb-orange);
 }
+.menu-ambient__embers { z-index: 1; }
 
-.menu-zone[data-mood='burgers'] { --amb-red: 1; --amb-orange: 0.35; }
-.menu-zone[data-mood='appetizers'] { --amb-red: 0.25; --amb-orange: 1; }
-.menu-zone[data-mood='party-box'] { --amb-red: 0.45; --amb-orange: 0.3; }
-.menu-zone[data-mood='drinks'] { --amb-red: 0.08; --amb-orange: 0.12; }
+.menu-zone[data-mood='burgers'] { --amb-red: 1; --amb-orange: 0.4; }
+.menu-zone[data-mood='appetizers'] { --amb-red: 0.3; --amb-orange: 1; }
+.menu-zone[data-mood='party-box'] { --amb-red: 0.5; --amb-orange: 0.7; }
+.menu-zone[data-mood='drinks'] { --amb-red: 0.05; --amb-orange: 0.05; }
 
-.menu-zone__products,
-.menu-zone__nav {
-  position: relative;
-  z-index: 1;
-}
+.menu-zone__nav,
+.menu-zone__products { position: relative; z-index: 2; }
 
 /* --------------------------------------------------------------------------
-   CATEGORY INTRO — compact typographic bridge between categories
+   CATEGORY INTRO — oversized editorial bridge
    -------------------------------------------------------------------------- */
-
 .category-intro {
   display: grid;
   justify-items: center;
@@ -68,169 +91,244 @@
   gap: var(--space-3);
   max-width: var(--container-max);
   margin-inline: auto;
-  padding: var(--space-8)
-    max(var(--container-pad), env(safe-area-inset-right))
-    var(--space-5)
+  padding: clamp(var(--space-8), 12vw, var(--space-10))
+    max(var(--container-pad), env(safe-area-inset-right)) var(--space-6)
     max(var(--container-pad), env(safe-area-inset-left));
 }
-
+.category-intro__kicker { color: var(--cat-accent); }
 .category-intro__name {
-  font-size: clamp(1.6rem, 2.4vw + 0.6rem, 2.6rem);
+  font-size: var(--text-title);
+  color: var(--color-text-primary);
+  text-shadow: 0 0 46px var(--cat-glow-1);
 }
-
-.category-intro__rule {
-  width: min(11rem, 46%);
-}
-
-.category-intro__desc {
-  max-width: 46ch;
-  text-align: center;
-}
+.category-intro__rule { width: min(12rem, 50%); }
+.category-intro__desc { max-width: 46ch; text-align: center; }
 
 /* --------------------------------------------------------------------------
-   SECTION SYSTEMS PER CATEGORY
-   Mobile: natural heights everywhere. Desktop: category rhythm.
+   GHOST TYPE — giant product name behind the food (desktop only, decorative)
    -------------------------------------------------------------------------- */
-
-/* Burgers — strongest cinematic treatment */
-.menu-category--burgers .product {
-  position: relative;
-}
-
-/* Fire glow behind the media, side follows the layout variant */
-.menu-category--burgers .product::before {
-  content: '';
+.product__ghost {
+  display: none;
   position: absolute;
-  top: 18%;
-  bottom: 8%;
-  width: 55%;
+  z-index: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-ghost);
+  line-height: 0.8;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(242, 230, 201, 0.10);
+  text-stroke: 1px rgba(242, 230, 201, 0.10);
   pointer-events: none;
-  background: radial-gradient(48% 42% at 50% 55%, rgba(201, 45, 28, 0.22), transparent 70%);
-  opacity: 0;
-  transition: opacity calc(var(--motion-reveal) * 2) var(--ease-cinematic);
+  user-select: none;
 }
-
-.menu-category--burgers .product--image-right::before { inset-inline-end: -6%; }
-.menu-category--burgers .product--image-left::before { inset-inline-start: -6%; }
-
-.menu-category--burgers .product.is-revealed::before {
-  opacity: 1;
-}
-
-/* Appetizers — tighter, tactile, warm edge light */
-.menu-category--appetizers .product .product__media {
-  filter: drop-shadow(0 18px 44px rgba(226, 88, 34, 0.14));
-}
-
-/* Party Box — wider framing, group-serving scale */
-.menu-category--party-box .product .product__media {
-  max-width: 52rem;
-  width: 100%;
-}
-
-@media (min-width: 1024px) {
-  .menu-category--burgers .product { min-height: 92svh; }
-  .menu-category--appetizers .product { min-height: 70svh; }
-  .menu-category--party-box .product { min-height: 82svh; }
-}
-
-/* --------------------------------------------------------------------------
-   DRINKS — compact sequential editorial rows, framed media
-   -------------------------------------------------------------------------- */
-
-.menu-category--drinks .product {
-  min-height: 0;
-  padding-block: var(--space-6);
-  gap: var(--space-5);
-}
-
-.menu-category--drinks .product .product__content {
-  gap: var(--space-2);
-}
-
-@media (min-width: 1024px) {
-  .menu-category--drinks .product {
-    min-height: 44svh;
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    grid-template-areas: 'media content';
-    justify-items: start;
-    column-gap: var(--space-8);
-  }
-
-  .menu-category--drinks .product .product__media { grid-area: media; }
-
-  .menu-category--drinks .product .product__content {
-    grid-area: content;
-    justify-items: start;
-    text-align: start;
-  }
+.product__ghost:lang(ar) {
+  font-family: var(--font-display-ar), var(--font-body);
+  font-weight: 800;
+  -webkit-text-stroke-width: 0;
+  color: rgba(242, 230, 201, 0.05);
 }
 
 /* --------------------------------------------------------------------------
    MEDIA TREATMENTS
    -------------------------------------------------------------------------- */
-
-/* Blend — dark food photos melt into the section: no visible rectangle */
-.product__media--blend {
-  border-radius: 0;
-  box-shadow: none;
-  overflow: hidden;
-  filter: drop-shadow(0 26px 60px rgba(6, 3, 2, 0.6));
+.product__media--blend .product__img {
+  object-fit: contain;
+  filter: drop-shadow(0 28px 60px rgba(6, 3, 2, 0.65)) drop-shadow(0 0 44px rgba(201, 45, 28, 0.18));
+  /* Melt the studio photo's black background into the dark section — the food
+     is centered, so fading the outer frame removes the hard rectangle edge. */
+  -webkit-mask-image: radial-gradient(76% 76% at 50% 50%, #000 66%, transparent 97%);
+  mask-image: radial-gradient(76% 76% at 50% 50%, #000 66%, transparent 97%);
 }
+.product__media--blend { aspect-ratio: 1 / 1; }
 
-.product__media--blend::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(ellipse 72% 72% at 50% 50%, transparent 52%, rgba(13, 9, 6, 0.62) 98%);
-}
-
-/* Frame — white drink photos sit inside a premium dark plate */
 .product__media--frame {
+  position: relative;
   aspect-ratio: auto;
-  max-width: 20rem;
-  padding: var(--space-4);
+  max-width: 24rem;
+  margin-inline: auto;
+  padding: var(--space-6);
   display: grid;
   place-items: center;
-  background: var(--grad-char);
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(70, 30, 46, 0.35), transparent 60%),
+    var(--grad-char);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow:
-    var(--edge-highlight),
-    inset 0 0 0 1px rgba(242, 230, 201, 0.05),
-    var(--shadow-soft);
-  overflow: visible;
-  margin-inline: auto;
+  box-shadow: var(--edge-highlight), inset 0 0 40px rgba(0, 0, 0, 0.4), var(--shadow-elevated);
 }
 
-.product__media--frame picture,
-.product__media--frame img {
-  width: 100%;
-  height: auto;
-  max-height: min(38svh, 22rem);
+/* Chilled frost halo behind the can — reinforces the drinks cooldown. */
+.product__media--frame::before {
+  content: '';
+  position: absolute;
+  inset: -18%;
+  z-index: -1;
+  background: radial-gradient(circle, rgba(96, 150, 200, 0.16), rgba(94, 20, 40, 0.10) 45%, transparent 72%);
+  filter: blur(24px);
+  pointer-events: none;
+}
+.product__media--frame .product__media-inner { height: auto; }
+.product__media--frame .product__img {
   object-fit: contain;
+  max-height: min(46svh, 24rem);
   border-radius: var(--radius-sm);
 }
 
+/* --------------------------------------------------------------------------
+   SCENE BASE (mobile-first) — single column, media first, content below.
+   -------------------------------------------------------------------------- */
+.product__media { align-self: center; }
+.product__media--blend { width: min(100%, 30rem); margin-inline: auto; }
+
+/* Party sparks / twin mirror decorations only where defined below. */
+
 @media (min-width: 1024px) {
-  .product__media--frame {
-    margin-inline: 0;
+  .product {
+    min-height: 88svh;
+    align-items: center;
+    column-gap: clamp(var(--space-7), 6vw, var(--space-10));
+  }
+  .product__ghost { display: block; }
+  .product__media--blend { width: 100%; margin-inline: 0; }
+
+  /* STACKED — content start, dominant food end, giant ghost bleeding behind */
+  .product--scene-stacked {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-areas: 'content media';
+  }
+  .product--scene-stacked .product__content { grid-area: content; }
+  .product--scene-stacked .product__media { grid-area: media; }
+  .product--scene-stacked .product__ghost {
+    inset-inline-end: -4%;
+    top: 8%;
+    text-align: end;
+  }
+
+  /* SPLIT — mirrored: food start, kinetic type end */
+  .product--scene-split {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    grid-template-areas: 'media content';
+  }
+  .product--scene-split .product__media { grid-area: media; }
+  .product--scene-split .product__content { grid-area: content; }
+  .product--scene-split .product__ghost {
+    inset-inline-start: -3%;
+    bottom: 6%;
+  }
+
+  /* FULL-BLEED — food dominates the frame, copy in scrimmed negative space */
+  .product--scene-fullbleed {
+    min-height: 100svh;
+    grid-template-columns: 1fr;
+    align-items: end;
+    padding-block: var(--space-9);
+  }
+  .product--scene-fullbleed .product__media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    z-index: 0;
+  }
+  .product--scene-fullbleed .product__media-inner,
+  .product--scene-fullbleed .product__img { height: 100%; }
+  .product--scene-fullbleed .product__img {
+    object-fit: cover;
+    filter: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .product--scene-fullbleed .product__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(80% 80% at 70% 40%, transparent 40%, rgba(13, 9, 6, 0.65) 100%),
+      linear-gradient(0deg, rgba(13, 9, 6, 0.85), transparent 55%);
+  }
+  .product--scene-fullbleed .product__content {
+    position: relative;
+    z-index: 2;
+    max-width: 44rem;
+    padding: var(--space-6);
+  }
+
+  /* TWIN — symmetrical central showcase with mirrored side glows */
+  .product--scene-twin {
+    min-height: 100svh;
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .product--scene-twin .product__media { width: min(52vw, 40rem); }
+  .product--scene-twin .product__content { justify-items: center; text-align: center; max-width: 46rem; }
+  .product--scene-twin .product__ghost {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .product--scene-twin::before,
+  .product--scene-twin::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    width: 34%;
+    height: 60%;
+    background: radial-gradient(circle, var(--cat-glow-1), transparent 68%);
+    filter: blur(20px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .product--scene-twin::before { inset-inline-start: -4%; }
+  .product--scene-twin::after { inset-inline-end: -4%; }
+
+  /* PARTY — climax: huge central showcase, brightest energy */
+  .product--scene-party {
+    min-height: 100svh;
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+  .product--scene-party .product__media { width: min(60vw, 46rem); }
+  .product--scene-party .product__content { justify-items: center; text-align: center; max-width: 48rem; }
+  .product--scene-party .product__title { font-size: clamp(3rem, 7vw, 6rem); }
+
+  /* DRINK — compact chilled row, ZIG-ZAG so no two neighbours match */
+  .product--scene-drink {
+    min-height: 48svh;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-areas: 'media content';
+    column-gap: var(--space-9);
+    align-items: center;
+  }
+  .product--scene-drink .product__media { grid-area: media; }
+  .product--scene-drink .product__content { grid-area: content; justify-items: start; text-align: start; }
+
+  /* Alternate every other drink → mirrored composition down the column */
+  .product--scene-drink:nth-of-type(even) {
+    grid-template-areas: 'content media';
+  }
+  .product--scene-drink:nth-of-type(even) .product__content {
+    justify-items: end;
+    text-align: end;
+  }
+
+  /* Giant chilled ghost name behind the can for editorial depth */
+  .product--scene-drink .product__title {
+    font-size: clamp(2.75rem, 6vw, 5.5rem);
+    text-shadow: 0 0 46px rgba(96, 150, 200, 0.22);
   }
 }
 
-/* --------------------------------------------------------------------------
-   REDUCED MOTION — everything visible and static, glow steady
-   -------------------------------------------------------------------------- */
+/* Party title is huge on all sizes */
+.product--scene-party .product__title { text-shadow: 0 0 50px var(--cat-glow-1); }
 
+/* --------------------------------------------------------------------------
+   REDUCED MOTION — freeze ghost/mirror shimmer (they are static anyway)
+   -------------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   .menu-ambient__red,
-  .menu-ambient__orange,
-  .menu-category--burgers .product::before {
-    transition: none;
-  }
-
-  .menu-category--burgers .product::before {
-    opacity: 0.6;
-  }
+  .menu-ambient__orange { transition: none; }
 }

@@ -9,7 +9,7 @@
  * on activate.
  */
 
-const VERSION = 'flip-v6';
+const VERSION = 'flip-v7';
 const STATIC_CACHE = `${VERSION}-static`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 
