@@ -74,6 +74,29 @@
       "price": 29
     },
     {
+      "id": "mid-night",
+      "category": "burgers",
+      "nameAr": "ميد نايت",
+      "nameEn": "MID NIGHT",
+      "images": {
+        "base": "assets/images/menu/burger/mid-night",
+        "widths": [
+          480,
+          800,
+          1254
+        ],
+        "fallback": "assets/images/menu/burger/mid-night-1254.jpg",
+        "w": 1254,
+        "h": 1254
+      },
+      "imageAltAr": "ميد نايت",
+      "imageAltEn": "MID NIGHT",
+      "layout": "image-right",
+      "background": "charcoal",
+      "accent": "flame-red",
+      "price": 26
+    },
+    {
       "id": "classico-beef",
       "category": "burgers",
       "nameAr": "كلاسيكو بيف",
@@ -118,29 +141,6 @@
       "background": "black",
       "accent": "flame-red",
       "price": 22
-    },
-    {
-      "id": "mid-night",
-      "category": "burgers",
-      "nameAr": "ميد نايت",
-      "nameEn": "MID NIGHT",
-      "images": {
-        "base": "assets/images/menu/burger/mid-night",
-        "widths": [
-          480,
-          800,
-          1254
-        ],
-        "fallback": "assets/images/menu/burger/mid-night-1254.jpg",
-        "w": 1254,
-        "h": 1254
-      },
-      "imageAltAr": "ميد نايت",
-      "imageAltEn": "MID NIGHT",
-      "layout": "image-right",
-      "background": "charcoal",
-      "accent": "flame-red",
-      "price": 26
     },
     {
       "id": "red-head",
