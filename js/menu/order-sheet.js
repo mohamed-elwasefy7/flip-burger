@@ -58,20 +58,40 @@ function build() {
   root.addEventListener('click', (e) => {
     const platform = e.target.closest('.order-sheet__platform');
     if (platform) {
-      // Real outbound tap — remember the choice, record the conversion event.
+      const configured = platform.hasAttribute('href');
+      track('delivery_platform_click', {
+        platform: platform.dataset.platform || 'unknown',
+        product: root.dataset.productId || null,
+        configured,
+      });
+      if (!configured) {
+        // No real URL yet (production decision 2026-07-23): keep the platform
+        // visible and answer the tap honestly. No navigation, nothing faked.
+        announceSoon();
+        return;
+      }
+      // Real outbound tap — remember the choice; the link navigates.
       try {
         localStorage.setItem(PLATFORM_KEY, platform.dataset.platform || '');
       } catch {
         /* non-fatal */
       }
-      track('delivery_platform_click', {
-        platform: platform.dataset.platform || 'unknown',
-        product: root.dataset.productId || null,
-      });
-      return; // let the link navigate
+      return;
     }
     if (e.target.closest('[data-close]')) closeOrderSheet();
   });
+}
+
+/** Approved "link coming soon" message via the shared status toast (aria-live). */
+let soonTimer = 0;
+function announceSoon() {
+  const status = document.getElementById('share-status');
+  if (!status) return;
+  status.textContent = str('menu.linkSoon');
+  clearTimeout(soonTimer);
+  soonTimer = setTimeout(() => {
+    status.textContent = '';
+  }, 3500);
 }
 
 export function initOrderSheet({ lenis }) {
@@ -90,38 +110,40 @@ export function openOrderSheet(product, opener, { links: linksOverride } = {}) {
   root.querySelector('.order-sheet__title').textContent = title;
   root.querySelector('.order-sheet__close').setAttribute('aria-label', str('menu.close'));
 
-  // Only real URLs ever render (activeOrderLinks filters empties). The
-  // remembered platform — a real prior tap — moves to the front with an
-  // honest «مرة ثانية؟» tag; nothing is invented.
-  let links = linksOverride ?? (product ? activeOrderLinks(product) : []);
+  // All three platforms always render (production decision 2026-07-23).
+  // A platform with a real URL is a link; one without is a same-styled button
+  // whose tap answers with the approved "link coming soon" message. URLs are
+  // never invented; the remembered platform — a real prior tap — moves to the
+  // front with an honest «مرة ثانية؟» tag.
+  const configured = new Map(
+    (linksOverride ?? (product ? activeOrderLinks(product) : [])).map((l) => [l.id, l.url])
+  );
+  let platforms = ['keeta', 'hungerstation', 'jahez'];
   const remembered = rememberedPlatform();
-  if (remembered && links.some((l) => l.id === remembered)) {
-    links = [...links.filter((l) => l.id === remembered), ...links.filter((l) => l.id !== remembered)];
+  if (remembered && configured.has(remembered)) {
+    platforms = [remembered, ...platforms.filter((id) => id !== remembered)];
   }
 
-  track('order_sheet_open', { product: product?.id || null, links: links.length });
+  track('order_sheet_open', { product: product?.id || null, links: configured.size });
 
   const body = root.querySelector('.order-sheet__body');
-
-  if (links.length === 0) {
-    body.innerHTML = `
-      <p class="order-sheet__empty-title body-copy body-copy--strong">${esc(str('menu.noLinks'))}</p>
-      <p class="order-sheet__empty-hint body-copy">${esc(str('menu.noLinksHint'))}</p>`;
-  } else {
-    body.innerHTML = `
-      <div class="order-sheet__platforms">
-        ${links
-          .map(
-            (l) => `
-          <a class="btn btn--primary order-sheet__platform${l.id === remembered ? ' is-remembered' : ''}"
-             href="${esc(l.url)}" data-platform="${esc(l.id)}" target="_blank" rel="noopener noreferrer">
-            <span>${esc(str(`menu.platforms.${l.id}`) || l.id)}</span>
-            ${l.id === remembered ? `<span class="order-sheet__again">${esc(str('menu.orderAgain'))}</span>` : ''}
-          </a>`
-          )
-          .join('')}
-      </div>`;
-  }
+  body.innerHTML = `
+    <div class="order-sheet__platforms">
+      ${platforms
+        .map((id) => {
+          const url = configured.get(id);
+          const label = `<span>${esc(str(`menu.platforms.${id}`) || id)}</span>`;
+          const again =
+            id === remembered && url
+              ? `<span class="order-sheet__again">${esc(str('menu.orderAgain'))}</span>`
+              : '';
+          return url
+            ? `<a class="btn btn--primary order-sheet__platform${id === remembered ? ' is-remembered' : ''}"
+                 href="${esc(url)}" data-platform="${esc(id)}" target="_blank" rel="noopener noreferrer">${label}${again}</a>`
+            : `<button class="btn btn--primary order-sheet__platform" type="button" data-platform="${esc(id)}">${label}</button>`;
+        })
+        .join('')}
+    </div>`;
 
   clearTimeout(closeTimer);
   root.hidden = false;

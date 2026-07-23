@@ -1,4 +1,14 @@
-# FLIP BURGER — Production Readiness Report (v1.0.0)
+# FLIP BURGER — Production Readiness Report
+
+## v1.0.1 addendum (2026-07-23, production data update)
+
+- **Prices: LIVE.** All 29 approved production prices set in `data/menu.json` (SAR, tabular render verified; suite check "29 production prices render with currency" passes). Name-variant mapping applied verbatim on price parity: KINZA COLA LIGHT → KINZA DIET COLA · KINZA LEMON LIGHT → KINZA DIET LEMON · KINZA CITRUS → KINZA LEMON MIX (all 4 SAR).
+- **Platforms: visible, honest.** All three platform cards (Keeta / HungerStation / Jahez) now always render in the order sheet. Real URLs still pending → a tap on an unconfigured platform shows the approved message «سيتم تفعيل رابط الطلب قريبًا.» / "Ordering link will be available soon." — no navigation, no invented URLs. The day real links land in `orderLinks`, cards become live anchors automatically.
+- Suite updated accordingly — **ALL PASS** · gates unchanged (A11y/BP/SEO 100, CLS 0, console clean) · tagged **`v1.0.1`**, not pushed.
+
+---
+
+# v1.0.0 report (superseded where the addendum above applies)
 
 | | |
 |---|---|

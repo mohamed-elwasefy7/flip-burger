@@ -1,5 +1,5 @@
 {
-  "_note": "REAL MENU v1 — names and photos are the official provided assets (English names imported verbatim from the provided files). PENDING: prices (intentionally absent — UI hides the price node), Arabic names are plain transliterations PENDING REVIEW (no creative renaming), descriptions/subtitles intentionally empty until provided. orderLinks intentionally empty → order sheet shows the localized 'links coming soon' state.",
+  "_note": "REAL MENU v1 — names and photos are the official provided assets (English names imported verbatim from the provided files). Prices: official production prices set 2026-07-23 (SAR). PENDING: Arabic names are plain transliterations PENDING REVIEW (no creative renaming), descriptions/subtitles intentionally empty until provided. orderLinks intentionally empty → order sheet shows the localized 'links coming soon' state.",
   "brand": "FLIP BURGER",
   "currency": "SAR",
   "updated": "2026-07-19",
@@ -55,348 +55,653 @@
       "category": "burgers",
       "nameAr": "بلاك توينز",
       "nameEn": "BLACK TWINS",
-      "images": { "base": "assets/images/menu/burger/black-twins", "widths": [480, 800, 1086], "fallback": "assets/images/menu/burger/black-twins-1086.jpg", "w": 1086, "h": 1448 },
+      "images": {
+        "base": "assets/images/menu/burger/black-twins",
+        "widths": [
+          480,
+          800,
+          1086
+        ],
+        "fallback": "assets/images/menu/burger/black-twins-1086.jpg",
+        "w": 1086,
+        "h": 1448
+      },
       "imageAltAr": "بلاك توينز",
       "imageAltEn": "BLACK TWINS",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 29
     },
     {
       "id": "classico-beef",
       "category": "burgers",
       "nameAr": "كلاسيكو بيف",
       "nameEn": "CLASSICO BEEF",
-      "images": { "base": "assets/images/menu/burger/classico-beef", "widths": [480, 800, 1280], "fallback": "assets/images/menu/burger/classico-beef-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/burger/classico-beef",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/burger/classico-beef-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "كلاسيكو بيف",
       "imageAltEn": "CLASSICO BEEF",
       "layout": "image-left",
       "background": "black",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 25
     },
     {
       "id": "classico-chicken",
       "category": "burgers",
       "nameAr": "كلاسيكو تشيكن",
       "nameEn": "CLASSICO CHICKEN",
-      "images": { "base": "assets/images/menu/burger/classico-chicken", "widths": [480, 800, 1280], "fallback": "assets/images/menu/burger/classico-chicken-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/burger/classico-chicken",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/burger/classico-chicken-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "كلاسيكو تشيكن",
       "imageAltEn": "CLASSICO CHICKEN",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 22
     },
     {
       "id": "classico-chicken-grilled",
       "category": "burgers",
       "nameAr": "كلاسيكو تشيكن جريلد",
       "nameEn": "CLASSICO CHICKEN GRILLED",
-      "images": { "base": "assets/images/menu/burger/classico-chicken-grilled", "widths": [480, 800, 1254], "fallback": "assets/images/menu/burger/classico-chicken-grilled-1254.jpg", "w": 1254, "h": 1254 },
+      "images": {
+        "base": "assets/images/menu/burger/classico-chicken-grilled",
+        "widths": [
+          480,
+          800,
+          1254
+        ],
+        "fallback": "assets/images/menu/burger/classico-chicken-grilled-1254.jpg",
+        "w": 1254,
+        "h": 1254
+      },
       "imageAltAr": "كلاسيكو تشيكن جريلد",
       "imageAltEn": "CLASSICO CHICKEN GRILLED",
       "layout": "image-left",
       "background": "black",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 22
     },
     {
       "id": "mid-night",
       "category": "burgers",
       "nameAr": "ميد نايت",
       "nameEn": "MID NIGHT",
-      "images": { "base": "assets/images/menu/burger/mid-night", "widths": [480, 800, 1254], "fallback": "assets/images/menu/burger/mid-night-1254.jpg", "w": 1254, "h": 1254 },
+      "images": {
+        "base": "assets/images/menu/burger/mid-night",
+        "widths": [
+          480,
+          800,
+          1254
+        ],
+        "fallback": "assets/images/menu/burger/mid-night-1254.jpg",
+        "w": 1254,
+        "h": 1254
+      },
       "imageAltAr": "ميد نايت",
       "imageAltEn": "MID NIGHT",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 26
     },
     {
       "id": "red-head",
       "category": "burgers",
       "nameAr": "ريد هيد",
       "nameEn": "RED HEAD",
-      "images": { "base": "assets/images/menu/burger/red-head", "widths": [480, 800, 1280], "fallback": "assets/images/menu/burger/red-head-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/burger/red-head",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/burger/red-head-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "ريد هيد",
       "imageAltEn": "RED HEAD",
       "layout": "image-left",
       "background": "black",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 26
     },
     {
       "id": "red-hit",
       "category": "burgers",
       "nameAr": "ريد هيت",
       "nameEn": "RED HIT",
-      "images": { "base": "assets/images/menu/burger/red-hit", "widths": [480, 800, 1280], "fallback": "assets/images/menu/burger/red-hit-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/burger/red-hit",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/burger/red-hit-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "ريد هيت",
       "imageAltEn": "RED HIT",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 23
     },
     {
       "id": "chicken-tenders",
       "category": "appetizers",
       "nameAr": "تشيكن تندرز",
       "nameEn": "CHICKEN TENDERS",
-      "images": { "base": "assets/images/menu/appetizers/chicken-tenders", "widths": [480, 800, 1280], "fallback": "assets/images/menu/appetizers/chicken-tenders-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/appetizers/chicken-tenders",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/appetizers/chicken-tenders-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "تشيكن تندرز",
       "imageAltEn": "CHICKEN TENDERS",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 19
     },
     {
       "id": "fries-box",
       "category": "appetizers",
       "nameAr": "فرايز بوكس",
       "nameEn": "FRIES BOX",
-      "images": { "base": "assets/images/menu/appetizers/fries-box", "widths": [480, 800, 1280], "fallback": "assets/images/menu/appetizers/fries-box-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/appetizers/fries-box",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/appetizers/fries-box-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "فرايز بوكس",
       "imageAltEn": "FRIES BOX",
       "layout": "image-left",
       "background": "black",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 9
     },
     {
       "id": "mozzarella-sticks",
       "category": "appetizers",
       "nameAr": "موتزاريلا ستيكس",
       "nameEn": "MOZZARELLA STICKS",
-      "images": { "base": "assets/images/menu/appetizers/mozzarella-sticks", "widths": [480, 800, 1280], "fallback": "assets/images/menu/appetizers/mozzarella-sticks-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/appetizers/mozzarella-sticks",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/appetizers/mozzarella-sticks-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "موتزاريلا ستيكس",
       "imageAltEn": "MOZZARELLA STICKS",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 14
     },
     {
       "id": "onion-rings",
       "category": "appetizers",
       "nameAr": "أونيون رينجز",
       "nameEn": "ONION RINGS",
-      "images": { "base": "assets/images/menu/appetizers/onion-rings", "widths": [480, 800, 1280], "fallback": "assets/images/menu/appetizers/onion-rings-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/appetizers/onion-rings",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/appetizers/onion-rings-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "أونيون رينجز",
       "imageAltEn": "ONION RINGS",
       "layout": "image-left",
       "background": "black",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 9
     },
     {
       "id": "wedges-potato",
       "category": "appetizers",
       "nameAr": "ويدجز بوتيتو",
       "nameEn": "WEDGES POTATO",
-      "images": { "base": "assets/images/menu/appetizers/wedges-potato", "widths": [480, 800, 1254], "fallback": "assets/images/menu/appetizers/wedges-potato-1254.jpg", "w": 1254, "h": 1254 },
+      "images": {
+        "base": "assets/images/menu/appetizers/wedges-potato",
+        "widths": [
+          480,
+          800,
+          1254
+        ],
+        "fallback": "assets/images/menu/appetizers/wedges-potato-1254.jpg",
+        "w": 1254,
+        "h": 1254
+      },
       "imageAltAr": "ويدجز بوتيتو",
       "imageAltEn": "WEDGES POTATO",
       "layout": "image-right",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 12
     },
     {
       "id": "small-party-12",
       "category": "party-box",
       "nameAr": "سمول بارتي 12 قطعة",
       "nameEn": "SMALL PARTY 12 PCS",
-      "images": { "base": "assets/images/menu/party-box/small-party-12", "widths": [480, 800, 1280], "fallback": "assets/images/menu/party-box/small-party-12-1280.jpg", "w": 1280, "h": 1024 },
+      "images": {
+        "base": "assets/images/menu/party-box/small-party-12",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/party-box/small-party-12-1280.jpg",
+        "w": 1280,
+        "h": 1024
+      },
       "imageAltAr": "سمول بارتي 12 قطعة",
       "imageAltEn": "SMALL PARTY 12 PCS",
       "layout": "centered",
       "background": "black",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 89
     },
     {
       "id": "big-party-24",
       "category": "party-box",
       "nameAr": "بيج بارتي 24 قطعة",
       "nameEn": "BIG PARTY 24 PCS",
-      "images": { "base": "assets/images/menu/party-box/big-party-24", "widths": [480, 800, 1280], "fallback": "assets/images/menu/party-box/big-party-24-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/party-box/big-party-24",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/party-box/big-party-24-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "بيج بارتي 24 قطعة",
       "imageAltEn": "BIG PARTY 24 PCS",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 169
     },
     {
       "id": "fries-mix-flip-gathering",
       "category": "party-box",
       "nameAr": "فرايز ميكس فليب جاذرينج",
       "nameEn": "FRIES MIX FLIP GATHERING",
-      "images": { "base": "assets/images/menu/party-box/fries-mix-flip-gathering", "widths": [480, 800, 1280], "fallback": "assets/images/menu/party-box/fries-mix-flip-gathering-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/party-box/fries-mix-flip-gathering",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/party-box/fries-mix-flip-gathering-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "فرايز ميكس فليب جاذرينج",
       "imageAltEn": "FRIES MIX FLIP GATHERING",
       "layout": "centered",
       "background": "black",
-      "accent": "flame-red"
+      "accent": "flame-red",
+      "price": 69
     },
     {
       "id": "pepsi",
       "category": "drinks",
       "nameAr": "بيبسي",
       "nameEn": "PEPSI",
-      "images": { "base": "assets/images/menu/drinks/pepsi", "widths": [447], "fallback": "assets/images/menu/drinks/pepsi-447.jpg", "w": 447, "h": 447 },
+      "images": {
+        "base": "assets/images/menu/drinks/pepsi",
+        "widths": [
+          447
+        ],
+        "fallback": "assets/images/menu/drinks/pepsi-447.jpg",
+        "w": 447,
+        "h": 447
+      },
       "imageAltAr": "بيبسي",
       "imageAltEn": "PEPSI",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "diet-pepsi",
       "category": "drinks",
       "nameAr": "بيبسي دايت",
       "nameEn": "DIET PEPSI",
-      "images": { "base": "assets/images/menu/drinks/diet-pepsi", "widths": [480, 736], "fallback": "assets/images/menu/drinks/diet-pepsi-736.jpg", "w": 736, "h": 736 },
+      "images": {
+        "base": "assets/images/menu/drinks/diet-pepsi",
+        "widths": [
+          480,
+          736
+        ],
+        "fallback": "assets/images/menu/drinks/diet-pepsi-736.jpg",
+        "w": 736,
+        "h": 736
+      },
       "imageAltAr": "بيبسي دايت",
       "imageAltEn": "DIET PEPSI",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "seven-up",
       "category": "drinks",
       "nameAr": "سفن أب",
       "nameEn": "SEVEN UP",
-      "images": { "base": "assets/images/menu/drinks/seven-up", "widths": [480, 584], "fallback": "assets/images/menu/drinks/seven-up-584.jpg", "w": 584, "h": 742 },
+      "images": {
+        "base": "assets/images/menu/drinks/seven-up",
+        "widths": [
+          480,
+          584
+        ],
+        "fallback": "assets/images/menu/drinks/seven-up-584.jpg",
+        "w": 584,
+        "h": 742
+      },
       "imageAltAr": "سفن أب",
       "imageAltEn": "SEVEN UP",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "diet-seven-up",
       "category": "drinks",
       "nameAr": "سفن أب دايت",
       "nameEn": "DIET SEVEN UP",
-      "images": { "base": "assets/images/menu/drinks/diet-seven-up", "widths": [480, 600], "fallback": "assets/images/menu/drinks/diet-seven-up-600.jpg", "w": 600, "h": 600 },
+      "images": {
+        "base": "assets/images/menu/drinks/diet-seven-up",
+        "widths": [
+          480,
+          600
+        ],
+        "fallback": "assets/images/menu/drinks/diet-seven-up-600.jpg",
+        "w": 600,
+        "h": 600
+      },
       "imageAltAr": "سفن أب دايت",
       "imageAltEn": "DIET SEVEN UP",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "mirinda-orange",
       "category": "drinks",
       "nameAr": "ميرندا برتقال",
       "nameEn": "MIRINDA ORANGE",
-      "images": { "base": "assets/images/menu/drinks/mirinda-orange", "widths": [480, 495], "fallback": "assets/images/menu/drinks/mirinda-orange-495.jpg", "w": 495, "h": 495 },
+      "images": {
+        "base": "assets/images/menu/drinks/mirinda-orange",
+        "widths": [
+          480,
+          495
+        ],
+        "fallback": "assets/images/menu/drinks/mirinda-orange-495.jpg",
+        "w": 495,
+        "h": 495
+      },
       "imageAltAr": "ميرندا برتقال",
       "imageAltEn": "MIRINDA ORANGE",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "mirinda-lemon",
       "category": "drinks",
       "nameAr": "ميرندا ليمون",
       "nameEn": "MIRINDA LEMON",
-      "images": { "base": "assets/images/menu/drinks/mirinda-lemon", "widths": [480, 736], "fallback": "assets/images/menu/drinks/mirinda-lemon-736.jpg", "w": 736, "h": 736 },
+      "images": {
+        "base": "assets/images/menu/drinks/mirinda-lemon",
+        "widths": [
+          480,
+          736
+        ],
+        "fallback": "assets/images/menu/drinks/mirinda-lemon-736.jpg",
+        "w": 736,
+        "h": 736
+      },
       "imageAltAr": "ميرندا ليمون",
       "imageAltEn": "MIRINDA LEMON",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "mountain-dew",
       "category": "drinks",
       "nameAr": "ماونتن ديو",
       "nameEn": "MOUNTAIN DEW",
-      "images": { "base": "assets/images/menu/drinks/mountain-dew", "widths": [430], "fallback": "assets/images/menu/drinks/mountain-dew-430.jpg", "w": 430, "h": 686 },
+      "images": {
+        "base": "assets/images/menu/drinks/mountain-dew",
+        "widths": [
+          430
+        ],
+        "fallback": "assets/images/menu/drinks/mountain-dew-430.jpg",
+        "w": 430,
+        "h": 686
+      },
       "imageAltAr": "ماونتن ديو",
       "imageAltEn": "MOUNTAIN DEW",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 5
     },
     {
       "id": "kinza-cola",
       "category": "drinks",
       "nameAr": "كنزا كولا",
       "nameEn": "KINZA COLA",
-      "images": { "base": "assets/images/menu/drinks/kinza-cola", "widths": [480, 736], "fallback": "assets/images/menu/drinks/kinza-cola-736.jpg", "w": 736, "h": 736 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-cola",
+        "widths": [
+          480,
+          736
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-cola-736.jpg",
+        "w": 736,
+        "h": 736
+      },
       "imageAltAr": "كنزا كولا",
       "imageAltEn": "KINZA COLA",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "kinza-diet-cola",
       "category": "drinks",
       "nameAr": "كنزا كولا دايت",
       "nameEn": "KINZA DIET COLA",
-      "images": { "base": "assets/images/menu/drinks/kinza-diet-cola", "widths": [480, 800, 1280], "fallback": "assets/images/menu/drinks/kinza-diet-cola-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-diet-cola",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-diet-cola-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "كنزا كولا دايت",
       "imageAltEn": "KINZA DIET COLA",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "kinza-lemon",
       "category": "drinks",
       "nameAr": "كنزا ليمون",
       "nameEn": "KINZA LEMON",
-      "images": { "base": "assets/images/menu/drinks/kinza-lemon", "widths": [480, 700], "fallback": "assets/images/menu/drinks/kinza-lemon-700.jpg", "w": 700, "h": 587 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-lemon",
+        "widths": [
+          480,
+          700
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-lemon-700.jpg",
+        "w": 700,
+        "h": 587
+      },
       "imageAltAr": "كنزا ليمون",
       "imageAltEn": "KINZA LEMON",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "kinza-diet-lemon",
       "category": "drinks",
       "nameAr": "كنزا ليمون دايت",
       "nameEn": "KINZA DIET LEMON",
-      "images": { "base": "assets/images/menu/drinks/kinza-diet-lemon", "widths": [480, 800, 1280], "fallback": "assets/images/menu/drinks/kinza-diet-lemon-1280.jpg", "w": 1280, "h": 1280 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-diet-lemon",
+        "widths": [
+          480,
+          800,
+          1280
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-diet-lemon-1280.jpg",
+        "w": 1280,
+        "h": 1280
+      },
       "imageAltAr": "كنزا ليمون دايت",
       "imageAltEn": "KINZA DIET LEMON",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "kinza-lemon-mix",
       "category": "drinks",
       "nameAr": "كنزا ليمون ميكس",
       "nameEn": "KINZA LEMON MIX",
-      "images": { "base": "assets/images/menu/drinks/kinza-lemon-mix", "widths": [480, 660], "fallback": "assets/images/menu/drinks/kinza-lemon-mix-660.jpg", "w": 660, "h": 900 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-lemon-mix",
+        "widths": [
+          480,
+          660
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-lemon-mix-660.jpg",
+        "w": 660,
+        "h": 900
+      },
       "imageAltAr": "كنزا ليمون ميكس",
       "imageAltEn": "KINZA LEMON MIX",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "kinza-orange",
       "category": "drinks",
       "nameAr": "كنزا برتقال",
       "nameEn": "KINZA ORANGE",
-      "images": { "base": "assets/images/menu/drinks/kinza-orange", "widths": [480, 736], "fallback": "assets/images/menu/drinks/kinza-orange-736.jpg", "w": 736, "h": 736 },
+      "images": {
+        "base": "assets/images/menu/drinks/kinza-orange",
+        "widths": [
+          480,
+          736
+        ],
+        "fallback": "assets/images/menu/drinks/kinza-orange-736.jpg",
+        "w": 736,
+        "h": 736
+      },
       "imageAltAr": "كنزا برتقال",
       "imageAltEn": "KINZA ORANGE",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 4
     },
     {
       "id": "small-water-nova",
       "category": "drinks",
       "nameAr": "مياه نوفا صغيرة",
       "nameEn": "SMALL WATER NOVA",
-      "images": { "base": "assets/images/menu/drinks/small-water-nova", "widths": [480, 735], "fallback": "assets/images/menu/drinks/small-water-nova-735.jpg", "w": 735, "h": 784 },
+      "images": {
+        "base": "assets/images/menu/drinks/small-water-nova",
+        "widths": [
+          480,
+          735
+        ],
+        "fallback": "assets/images/menu/drinks/small-water-nova-735.jpg",
+        "w": 735,
+        "h": 784
+      },
       "imageAltAr": "مياه نوفا صغيرة",
       "imageAltEn": "SMALL WATER NOVA",
       "layout": "centered",
       "background": "charcoal",
-      "accent": "fire-orange"
+      "accent": "fire-orange",
+      "price": 2
     }
   ]
 }

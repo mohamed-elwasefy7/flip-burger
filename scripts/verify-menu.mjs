@@ -111,7 +111,17 @@ const badResponses = [];
   check('single ambient mood layer', exp.ambient === 1, `got ${exp.ambient}`);
   check('14 framed drinks + 15 blended food medias', exp.frames === 14 && exp.blends === 15, JSON.stringify(exp));
   check('category classes stamped', exp.catClasses);
-  check('no price nodes (prices pending)', shape.priceNodes === 0, `found ${shape.priceNodes}`);
+  // Production prices (set 2026-07-23): every product carries a price node.
+  const prices = await page.evaluate(() => ({
+    count: document.querySelectorAll('.product__price').length,
+    blackTwins: document.querySelector('#product-black-twins .product__price')?.textContent.replace(/\s/g, ''),
+    water: document.querySelector('#product-small-water-nova .product__price')?.textContent.replace(/\s/g, ''),
+  }));
+  check(
+    '29 production prices render with currency',
+    prices.count === 29 && prices.blackTwins?.startsWith('29') && prices.water?.startsWith('2'),
+    JSON.stringify(prices)
+  );
   check('no placeholders — all real photos', shape.placeholders === 0 && shape.realPictures === 29);
   check('AVIF sources present on every product', shape.avifSources === 29, `got ${shape.avifSources}`);
   check('AR name renders on first product', shape.lang === 'ar' && /[؀-ۿ]/.test(shape.firstTitle), shape.firstTitle);
@@ -196,14 +206,32 @@ const badResponses = [];
     await new Promise((r) => setTimeout(r, 150));
     const sheet = document.querySelector('.order-sheet');
     const open = !sheet.hidden;
-    const msg = sheet.querySelector('.order-sheet__empty-title')?.textContent.trim();
+    // Production behavior (2026-07-23): all 3 platforms stay visible; none has
+    // a URL yet, so a tap answers with the approved "coming soon" message.
+    const platforms = sheet.querySelectorAll('.order-sheet__platform');
+    const anchors = sheet.querySelectorAll('.order-sheet__platform[href]').length;
+    platforms[0]?.click();
+    await new Promise((r) => setTimeout(r, 150));
+    const soonMsg = document.getElementById('share-status')?.textContent.trim();
     const fits = sheet.querySelector('.order-sheet__panel').getBoundingClientRect().width <= innerWidth;
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
     // Phase 3: close plays a fast exit transition; `hidden` lands at ~220ms.
     await new Promise((r) => setTimeout(r, 400));
-    return { open, msg, fits, closed: sheet.hidden, focusBack: document.activeElement === opener };
+    return {
+      open,
+      count: platforms.length,
+      anchors,
+      soonMsg,
+      fits,
+      closed: sheet.hidden,
+      focusBack: document.activeElement === opener,
+    };
   }, pid);
-  check('order sheet opens (0 links → coming soon)', sheetFlow.open && !!sheetFlow.msg, sheetFlow.msg);
+  check(
+    'order sheet: 3 platforms visible, no-URL tap → approved soon message',
+    sheetFlow.open && sheetFlow.count === 3 && sheetFlow.anchors === 0 && !!sheetFlow.soonMsg,
+    JSON.stringify({ count: sheetFlow.count, anchors: sheetFlow.anchors, soonMsg: sheetFlow.soonMsg })
+  );
   check('order sheet fits small screen', sheetFlow.fits);
   check('Esc closes + focus returns', sheetFlow.closed && sheetFlow.focusBack);
 
@@ -311,13 +339,20 @@ const badResponses = [];
     const first = document.querySelector('.product');
     first.querySelector('[data-order]').click();
     await new Promise((r) => setTimeout(r, 150));
-    const links = [...document.querySelectorAll('.order-sheet__platform')];
+    const all = [...document.querySelectorAll('.order-sheet__platform')];
+    const anchors = all.filter((l) => l.hasAttribute('href'));
     return {
-      count: links.length,
-      hrefsOk: links.every((l) => l.href.startsWith('https://example.com/')),
+      total: all.length,
+      real: anchors.length,
+      hrefsOk: anchors.every((l) => l.href.startsWith('https://example.com/')),
+      soonButtons: all.length - anchors.length,
     };
   });
-  check('multi-platform selector renders 2 platforms', multi.count === 2 && multi.hrefsOk);
+  check(
+    'platforms: 2 real links + 1 soon-button, only real URLs navigable',
+    multi.total === 3 && multi.real === 2 && multi.hrefsOk && multi.soonButtons === 1,
+    JSON.stringify(multi)
+  );
   await page.close();
 }
 
@@ -471,17 +506,19 @@ const badResponses = [];
     first.querySelector('[data-order]').click();
     await new Promise((r) => setTimeout(r, 200));
     const links = [...document.querySelectorAll('.order-sheet__platform')];
+    const anchors = links.filter((l) => l.hasAttribute('href'));
     localStorage.removeItem('flip-platform');
     return {
       firstPlatform: links[0]?.dataset.platform,
+      firstIsAnchor: links[0]?.hasAttribute('href'),
       remembered: links[0]?.classList.contains('is-remembered'),
       tagged: !!links[0]?.querySelector('.order-sheet__again'),
-      allReal: links.every((l) => l.href.startsWith('https://example.com/')),
+      realOk: anchors.length === 2 && anchors.every((l) => l.href.startsWith('https://example.com/')),
     };
   });
   check(
-    'platform memory: remembered first + tagged + only real URLs',
-    memory.firstPlatform === 'jahez' && memory.remembered && memory.tagged && memory.allReal,
+    'platform memory: remembered first + tagged + only real URLs navigable',
+    memory.firstPlatform === 'jahez' && memory.firstIsAnchor && memory.remembered && memory.tagged && memory.realOk,
     JSON.stringify(memory)
   );
   await page.close();
