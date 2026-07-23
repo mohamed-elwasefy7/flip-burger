@@ -24,7 +24,7 @@ function markRevealed(s) {
   s.classList.add('is-revealed');
 }
 
-export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion }) {
+export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion, instantId = null }) {
   const sections = [...listMount.querySelectorAll('.product')];
   if (!sections.length) return { dispose() {} };
 
@@ -39,7 +39,9 @@ export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion
     const instant = document.hidden;
 
     for (const s of sections) {
-      if (instant) {
+      // High-intent deep-link target: image, name and CTA present on landing —
+      // no cinematic delay between arrival and the order action.
+      if (instant || s.dataset.productId === instantId) {
         markRevealed(s);
         continue;
       }
@@ -80,13 +82,17 @@ export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion
           { autoAlpha: 1, yPercent: 0, xPercent: 0, duration: REVEAL }, '-=85%');
       }
 
-      // Content: staggered, direction depends on scene rhythm.
+      // Content: staggered, direction depends on scene rhythm. The order CTA
+      // is pulled out of the stagger and lands last as its own weighted beat —
+      // crave first, ask second (image → title → meta → price → CTA).
+      const actions = its.filter((el) => el.classList.contains('product__actions'));
+      const copy = its.filter((el) => !el.classList.contains('product__actions'));
       const contentFrom =
         scene === 'split' ? { autoAlpha: 0, x: 30 }
         : scene === 'drink' ? { autoAlpha: 0, y: 16 }
         : { autoAlpha: 0, yPercent: 40 };
       tl.fromTo(
-        its,
+        copy,
         contentFrom,
         {
           autoAlpha: 1, x: 0, y: 0, yPercent: 0,
@@ -95,6 +101,14 @@ export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion
         },
         g ? '-=70%' : '-=60%'
       );
+      if (actions.length) {
+        tl.fromTo(
+          actions,
+          { autoAlpha: 0, y: 18 },
+          { autoAlpha: 1, y: 0, duration: REVEAL * 0.5, ease: 'power3.out' },
+          '-=35%'
+        );
+      }
     };
 
     const seen = new WeakSet();
@@ -109,7 +123,11 @@ export function initProductMotion({ listMount, gsap, ScrollTrigger, reduceMotion
       },
       { rootMargin: '0px 0px -12% 0px', threshold: 0.18 }
     );
-    if (!instant) sections.forEach((s) => io.observe(s));
+    if (!instant) {
+      sections
+        .filter((s) => s.dataset.productId !== instantId)
+        .forEach((s) => io.observe(s));
+    }
 
     // Parallax — desktop + motion-OK. Food drifts inside its frame; ghost
     // counter-moves for depth. Skip drinks (calm) and placeholders.

@@ -177,3 +177,29 @@
   }
   .fx-embers { display: none; }
 }
+
+/* Phase 1 is intentionally static. The visual system is established first;
+   narrative motion returns only when the Motion Bible is implemented. */
+.phase-foundation .js [data-enter],
+.phase-foundation [data-enter] {
+  opacity: 1 !important;
+  transform: none !important;
+  clip-path: none !important;
+  will-change: auto;
+}
+
+.phase-foundation .fx-glow,
+.phase-foundation .fx-smoke,
+.phase-foundation .fx-grain::after,
+.phase-foundation .fx-sweep::before,
+.phase-foundation .hero__cue-line {
+  animation: none;
+}
+
+.phase-foundation .fx-embers {
+  display: none;
+}
+
+.phase-foundation .magnetic {
+  will-change: auto;
+}

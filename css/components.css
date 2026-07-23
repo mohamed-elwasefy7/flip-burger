@@ -183,13 +183,18 @@
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  min-height: 4rem;
+  min-height: var(--nav-height);
   padding-inline: max(var(--container-pad), env(safe-area-inset-left))
     max(var(--container-pad), env(safe-area-inset-right));
   background: rgba(13, 9, 6, 0.86);
   -webkit-backdrop-filter: blur(14px) saturate(1.2);
   backdrop-filter: blur(14px) saturate(1.2);
   border-bottom: 1px solid var(--color-border);
+}
+
+.phase-foundation .btn.is-loading::after,
+.phase-foundation .boot-screen__ember {
+  animation: none;
 }
 
 /* Bottom sheet — mobile-first, safe-area aware. */
@@ -277,6 +282,98 @@
   -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-top: 1px solid var(--color-border);
+}
+
+/* --------------------------------------------------------------------------
+   STICKY ORDER BAR (mobile) — the thumb is always on اطلب. Appears while the
+   menu zone is on screen; hides under the open sheet and on desktop. Token
+   durations → reduced-motion collapses to instant.
+   -------------------------------------------------------------------------- */
+.order-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 3.5rem;
+  padding: var(--space-2)
+    max(var(--space-4), env(safe-area-inset-right))
+    calc(var(--space-2) + env(safe-area-inset-bottom))
+    max(var(--space-4), env(safe-area-inset-left));
+  background: rgba(13, 9, 6, 0.94);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  backdrop-filter: blur(14px) saturate(1.05);
+  border-top: 1px solid var(--color-border);
+  transform: translateY(110%);
+  transition: transform var(--motion-fast) var(--ease-exit);
+}
+
+.order-bar.is-visible {
+  transform: translateY(0);
+  transition: transform var(--motion-standard) var(--ease-entry);
+}
+
+/* The open sheet owns the bottom edge — the bar yields. */
+.sheet-open .order-bar {
+  transform: translateY(110%);
+}
+
+.order-bar__context {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order-bar__cta {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+  min-width: 8.5rem;
+  letter-spacing: 0.08em;
+}
+
+.order-bar__cta:lang(ar) {
+  letter-spacing: 0;
+}
+
+@media (min-width: 1024px) {
+  .order-bar {
+    display: none;
+  }
+}
+
+/* Share confirmation toast — quiet, certain, one at a time. Visible only
+   while it carries text (aria-live announces regardless of visibility). */
+.share-toast {
+  position: fixed;
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom));
+  inset-inline: 0;
+  margin-inline: auto;
+  width: fit-content;
+  max-width: min(92vw, 24rem);
+  z-index: var(--z-toast);
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  color: var(--color-text-primary);
+  font-size: var(--text-small);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: var(--edge-highlight), var(--shadow-elevated);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--motion-standard) var(--ease-entry),
+    transform var(--motion-standard) var(--ease-entry);
+  pointer-events: none;
+}
+
+.share-toast:not(:empty) {
+  opacity: 1;
+  transform: none;
 }
 
 /* --------------------------------------------------------------------------

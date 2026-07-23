@@ -33,3 +33,16 @@ export function toggleFavorite(id) {
   write(list);
   return idx === -1; // now favorited?
 }
+
+/** All favorited ids, most recently added last. */
+export function favoritesList() {
+  return read();
+}
+
+/** Drop ids that no longer exist in the live menu (removed products). */
+export function pruneFavorites(validIds) {
+  const list = read();
+  const pruned = list.filter((id) => validIds.has(id));
+  if (pruned.length !== list.length) write(pruned);
+  return pruned;
+}

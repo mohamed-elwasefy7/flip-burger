@@ -47,6 +47,34 @@ export function renderCategoryNav(mount, categories, { lenis, reduceMotion }) {
 }
 
 /**
+ * Favorites chip — exists only while ≥1 valid favorite is saved. Jumps to the
+ * saved strip. Appending/removing a chip only changes the horizontal strip
+ * (scrollable row) — zero vertical layout shift.
+ */
+export function setFavChip(count, { lenis, reduceMotion } = {}) {
+  if (!strip) return;
+  let chip = strip.querySelector('.cat-nav__chip--favs');
+  if (!count) {
+    chip?.remove();
+    return;
+  }
+  if (!chip) {
+    chip = document.createElement('a');
+    chip.className = 'cat-nav__chip cat-nav__chip--favs';
+    chip.href = '#saved-strip';
+    chip.addEventListener('click', (event) => {
+      const target = document.getElementById('saved-strip');
+      if (!target) return; // strip appears on next render — anchor still valid
+      event.preventDefault();
+      if (lenis && !reduceMotion) lenis.scrollTo(target, { offset: -140, duration: 1 });
+      else target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+    strip.prepend(chip);
+  }
+  chip.textContent = `♥ ${str('menu.favorites')} · ${count}`;
+}
+
+/**
  * Center the active chip inside the strip by scrolling the STRIP only.
  * Never scrollIntoView here: on an element inside a sticky container,
  * Chromium scrolls the page to the container's static layout position —

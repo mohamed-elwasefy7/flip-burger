@@ -28,7 +28,9 @@ body {
 }
 
 body {
-  background-color: var(--color-black);
+  background:
+    radial-gradient(90rem 50rem at 50% -20rem, rgba(201, 45, 28, 0.08), transparent 68%),
+    var(--color-black);
   color: var(--color-text-primary);
   font-family: var(--font-body);
   font-size: var(--text-base);
@@ -94,7 +96,7 @@ body {
   font-size: var(--text-base);
   line-height: 1.65;
   color: var(--color-text-secondary);
-  max-width: 65ch;
+  max-width: var(--content-measure);
 }
 
 .body-copy--strong {
@@ -107,7 +109,7 @@ body {
   font-size: var(--text-price);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.01em;
-  color: var(--color-warm-yellow);
+  color: var(--color-text-primary);
   white-space: nowrap;
 }
 
@@ -166,6 +168,16 @@ body {
   font-weight: 800;
   line-height: 1.25;
   text-transform: none;
+}
+
+.title-section:lang(ar) {
+  font-size: clamp(3.5rem, 9.5vw, 8.4rem);
+  line-height: 1.05;
+}
+
+.product-name:lang(ar) {
+  font-size: clamp(3.2rem, 7.2vw, 7.35rem);
+  line-height: 1.08;
 }
 
 .body-copy:lang(ar),

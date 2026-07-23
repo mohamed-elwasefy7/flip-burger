@@ -39,6 +39,9 @@
   <!-- Critical preloads: boot/hero logo + hero-visible fonts (AR default h1 =
        Almarai 800, body = Archivo 400, EN display = Anton). -->
   <link rel="preload" as="image" href="./assets/logo/logo-512.webp" type="image/webp" vite-ignore />
+  <link rel="preload" as="image" type="image/avif"
+    imagesrcset="./assets/images/menu/burger/red-hit-480.avif 480w, ./assets/images/menu/burger/red-hit-800.avif 800w, ./assets/images/menu/burger/red-hit-1280.avif 1280w"
+    imagesizes="(min-width: 1024px) 52vw, 88vw" fetchpriority="high" vite-ignore />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/almarai-arabic-800.woff2" crossorigin vite-ignore />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/archivo-latin-400.woff2" crossorigin vite-ignore />
   <link rel="preload" as="font" type="font/woff2" href="./assets/fonts/anton-latin-400.woff2" crossorigin vite-ignore />
@@ -190,6 +193,7 @@
               height="1280"
               decoding="async"
               loading="eager"
+              fetchpriority="high"
               vite-ignore
             />
           </picture>
@@ -240,7 +244,7 @@
 
   </main>
 
-  <p id="share-status" class="visually-hidden" role="status" aria-live="polite"></p>
+  <p id="share-status" class="share-toast" role="status" aria-live="polite"></p>
 
   <noscript>
     <p class="noscript">FLIP BURGER — this experience requires JavaScript.</p>

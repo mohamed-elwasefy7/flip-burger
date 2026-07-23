@@ -1,5 +1,5 @@
 {
-  "_note": "TEMPORARY COPY — hero slogan/support and bridge lines are placeholder direction ('اقلب مزاجك' / 'FLIP THE CRAVING') approved for development only. Replace with final approved brand copy before launch. Only defaultLang + i18n are read by the app (js/core/i18n.js); all asset paths are hardcoded in index.html.",
+  "_note": "PRODUCTION COPY — approved as final at the 2026-07-23 production sign-off (hero slogan/support, bridge lines, category intro lines, utility labels). Any future copy change is a deliberate brand decision, edited here only. Only defaultLang + i18n are read by the app (js/core/i18n.js); all asset paths are hardcoded in index.html.",
   "brandName": "FLIP BURGER",
   "defaultLang": "ar",
   "i18n": {
@@ -27,8 +27,20 @@
       },
       "menu": {
         "catNavAria": "أقسام المنيو",
+        "chapter": "المنيو",
+        "catIntro": {
+          "burgers": "من النار مباشرة — كل قلبة لها مزاجها.",
+          "appetizers": "الافتتاحية قبل البطل.",
+          "party-box": "لليلة اللي تسوى — صندوق يكفي الجمعة كلها.",
+          "drinks": "طفّي الحريقة."
+        },
         "order": "اطلب",
         "orderVia": "اطلب عبر",
+        "saved": "المحفوظات",
+        "favorites": "المفضلة",
+        "recent": "آخر ما شفت",
+        "orderAgain": "مرة ثانية؟",
+        "heat": "مستوى الحرارة",
         "noLinks": "روابط الطلب قريباً",
         "noLinksHint": "نجهّز التوصيل — قريباً على تطبيقاتك المفضلة.",
         "close": "إغلاق",
@@ -75,8 +87,20 @@
       },
       "menu": {
         "catNavAria": "Menu categories",
+        "chapter": "The Menu",
+        "catIntro": {
+          "burgers": "Straight off the fire — every flip has a mood.",
+          "appetizers": "The opening act.",
+          "party-box": "For the nights that count — one box feeds the crew.",
+          "drinks": "Put out the fire."
+        },
         "order": "Order",
         "orderVia": "Order via",
+        "saved": "Saved for you",
+        "favorites": "Favorites",
+        "recent": "Recently viewed",
+        "orderAgain": "Again?",
+        "heat": "Heat level",
         "noLinks": "Ordering links coming soon",
         "noLinksHint": "Delivery is on the way — soon on your favorite apps.",
         "close": "Close",

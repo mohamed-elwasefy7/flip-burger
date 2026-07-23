@@ -3,7 +3,8 @@
  *
  * MOBILE DOM ORDER — ABSOLUTE RULE (identical for every product & scene):
  *   1 image · 2 category label · 3 name · 4 subtitle · 5 description ·
- *   6 ingredients · 7 badges/meta · 8 price · 9 order CTA · 10 fav/share
+ *   6 ingredients · 7 heat (data-gated) · 8 badges/meta · 9 price ·
+ *   10 order CTA · 11 fav/share
  * Content children are authored in exactly that order. Scenes re-compose the
  * MEDIA vs CONTENT placement via CSS grid/absolute on desktop only — never
  * via `order`, never reordering the DOM. The giant "ghost" name is decorative
@@ -79,6 +80,24 @@ function metaMarkup(product) {
   return bits.length ? `<p class="product__meta" data-pc>${bits.join(' · ')}</p>` : '';
 }
 
+/**
+ * Heat ladder (Bible §10) — capability shipped dark: renders ONLY when a
+ * product carries an integer `heatLevel` 1–5 in menu.json. No product does
+ * today, so nothing renders; assigning levels is a data decision, not code.
+ */
+function heatMarkup(product) {
+  const level = product.heatLevel;
+  if (!Number.isInteger(level) || level < 1) return '';
+  const lvl = Math.min(level, 5);
+  const dots = Array.from(
+    { length: 5 },
+    (_, i) => `<span class="product__heat-dot${i < lvl ? ' is-lit' : ''}" aria-hidden="true"></span>`
+  ).join('');
+  return `
+    <div class="product__heat${lvl >= 5 ? ' product__heat--inferno' : ''}" data-pc
+      role="img" aria-label="${esc(str('menu.heat'))} ${lvl}/5">${dots}</div>`;
+}
+
 function pickList(product, base) {
   const lang = document.documentElement.lang;
   const primary = lang === 'ar' ? product[`${base}Ar`] : product[`${base}En`];
@@ -86,7 +105,7 @@ function pickList(product, base) {
   return (primary?.length ? primary : fallback) || [];
 }
 
-export function renderProduct(product, category, { eager = false, scene = 'stacked' } = {}) {
+export function renderProduct(product, category, { eager = false, scene = 'stacked', index = 0, total = 0 } = {}) {
   scene = SCENES.has(scene) ? scene : 'stacked';
   const name = pickText(product, 'name');
   const subtitle = pickText(product, 'subtitle');
@@ -110,11 +129,20 @@ export function renderProduct(product, category, { eager = false, scene = 'stack
       ? `<span class="product__ghost" aria-hidden="true">${esc(name)}</span>`
       : '';
 
+  // Editorial index — decorative plate numeral (aria-hidden, absolute; never
+  // part of the reading order). Drinks grid stays clean without it.
+  const editorialIndex =
+    index && scene !== 'drink'
+      ? `<span class="product__index" aria-hidden="true">${String(index).padStart(2, '0')}</span>`
+      : '';
+  const counter = index && total && scene !== 'drink' ? `<span class="product__cat-count">${String(index).padStart(2, '0')} / ${String(total).padStart(2, '0')}</span>` : '';
+
   article.innerHTML = `
     ${ghost}
+    ${editorialIndex}
     ${mediaMarkup(product, { eager })}
     <div class="product__content">
-      <span class="label product__cat" data-pc>${esc(catName)}</span>
+      <span class="label product__cat" data-pc>${esc(catName)}${counter}</span>
       <h3 class="product-name product__title" id="product-title-${product.id}" data-pc>${esc(name)}</h3>
       ${subtitle ? `<p class="product__subtitle" data-pc>${esc(subtitle)}</p>` : ''}
       ${description ? `<p class="body-copy product__desc" data-pc>${esc(description)}</p>` : ''}
@@ -123,6 +151,7 @@ export function renderProduct(product, category, { eager = false, scene = 'stack
           ? `<ul class="product__ingredients" data-pc>${ingredientsList.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>`
           : ''
       }
+      ${heatMarkup(product)}
       ${badgesMarkup(product)}
       ${metaMarkup(product)}
       ${

@@ -48,3 +48,23 @@ export function activeOrderLinks(product) {
     .map((id) => ({ id, url: (product.orderLinks?.[id] || '').trim() }))
     .filter((l) => l.url);
 }
+
+/**
+ * Brand-level platform links: for each platform, the first real URL found
+ * across the menu (store links are per-platform, so any product's link opens
+ * the same store). Empty until real orderLinks exist in the data — the sheet
+ * then shows its honest "coming soon" state. Nothing is ever invented.
+ */
+export function unionOrderLinks(data) {
+  const union = [];
+  for (const id of ['keeta', 'hungerstation', 'jahez']) {
+    for (const products of data.byCategory.values()) {
+      const hit = products.find((p) => (p.orderLinks?.[id] || '').trim());
+      if (hit) {
+        union.push({ id, url: hit.orderLinks[id].trim() });
+        break;
+      }
+    }
+  }
+  return union;
+}

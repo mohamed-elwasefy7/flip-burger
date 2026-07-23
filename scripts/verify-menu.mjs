@@ -24,7 +24,7 @@ const browser = await puppeteer.launch({
   args: ['--disable-gpu', '--hide-scrollbars'],
 });
 
-async function newPage({ viewport, interceptMultiLink = false, forceShareFallback = false }) {
+async function newPage({ viewport, interceptMultiLink = false, forceShareFallback = false, url = null }) {
   const page = await browser.newPage();
   await page.setViewport({ ...viewport, deviceScaleFactor: 1 });
 
@@ -59,7 +59,7 @@ async function newPage({ viewport, interceptMultiLink = false, forceShareFallbac
     }, menu);
   }
 
-  await page.goto(URL_BASE, { waitUntil: 'networkidle0', timeout: 45000 });
+  await page.goto(url || URL_BASE, { waitUntil: 'networkidle0', timeout: 45000 });
   await page.waitForFunction(() => !document.getElementById('boot'), { timeout: 8000 });
   await page.waitForSelector('.product', { timeout: 8000 });
   return page;
@@ -199,7 +199,8 @@ const badResponses = [];
     const msg = sheet.querySelector('.order-sheet__empty-title')?.textContent.trim();
     const fits = sheet.querySelector('.order-sheet__panel').getBoundingClientRect().width <= innerWidth;
     document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
-    await new Promise((r) => setTimeout(r, 100));
+    // Phase 3: close plays a fast exit transition; `hidden` lands at ~220ms.
+    await new Promise((r) => setTimeout(r, 400));
     return { open, msg, fits, closed: sheet.hidden, focusBack: document.activeElement === opener };
   }, pid);
   check('order sheet opens (0 links → coming soon)', sheetFlow.open && !!sheetFlow.msg, sheetFlow.msg);
@@ -320,15 +321,182 @@ const badResponses = [];
   await page.close();
 }
 
+/* ---------- Phase 4: conversion layer ---------- */
+{
+  // Saved strip + favorites chip: absent with clean storage.
+  const page = await newPage({ viewport: { width: 390, height: 844 } });
+  await page.evaluate(() => {
+    localStorage.removeItem('flip-favs');
+    localStorage.removeItem('flip-recent');
+    localStorage.removeItem('flip-platform');
+  });
+  await page.reload({ waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => !document.getElementById('boot'), { timeout: 8000 });
+  await page.waitForSelector('.product');
+  const empty = await page.evaluate(() => ({
+    strip: !!document.getElementById('saved-strip'),
+    chip: !!document.querySelector('.cat-nav__chip--favs'),
+  }));
+  check('saved strip + fav chip absent with clean storage', !empty.strip && !empty.chip, JSON.stringify(empty));
+
+  // Seed: 1 real favorite + 1 stale id; recents = duplicate of the favorite +
+  // a second real product + a stale id → strip renders, deduped, pruned.
+  const seeded = await page.evaluate(() => {
+    const ids = [...document.querySelectorAll('.product')].map((p) => p.dataset.productId);
+    localStorage.setItem('flip-favs', JSON.stringify([ids[0], 'ghost-product']));
+    localStorage.setItem('flip-recent', JSON.stringify([ids[0], ids[1], 'ghost-recent']));
+    return { a: ids[0], b: ids[1] };
+  });
+  await page.reload({ waitUntil: 'networkidle0' });
+  await page.waitForFunction(() => !document.getElementById('boot'), { timeout: 8000 });
+  await page.waitForSelector('.product');
+  const strip = await page.evaluate(() => {
+    const tiles = [...document.querySelectorAll('.saved-strip__tile')].map((t) => t.dataset.savedJump);
+    return {
+      present: !!document.getElementById('saved-strip'),
+      tiles,
+      unique: new Set(tiles).size === tiles.length,
+      favsStore: JSON.parse(localStorage.getItem('flip-favs')),
+      recentStore: JSON.parse(localStorage.getItem('flip-recent')),
+      chipText: document.querySelector('.cat-nav__chip--favs')?.textContent || '',
+    };
+  });
+  check(
+    'saved strip renders seeded + deduped + stale ids pruned',
+    strip.present &&
+      strip.unique &&
+      strip.tiles.includes(seeded.a) &&
+      strip.tiles.includes(seeded.b) &&
+      !strip.favsStore.includes('ghost-product') &&
+      !strip.recentStore.includes('ghost-recent'),
+    JSON.stringify(strip)
+  );
+  check('favorites chip present with count', strip.chipText.includes('1'), strip.chipText);
+
+  // Strip tile jump lands near the product.
+  const jump = await page.evaluate(async (id) => {
+    document.querySelector(`.saved-strip__tile[data-saved-jump="${id}"]`).click();
+    await new Promise((r) => setTimeout(r, 1600));
+    const rect = document.getElementById(`product-${id}`).getBoundingClientRect();
+    return Math.abs(rect.top) < innerHeight;
+  }, seeded.b);
+  check('saved-strip tile jumps to product', jump);
+
+  // Sticky order bar: visible inside the menu, yields to the open sheet.
+  const bar = await page.evaluate(async () => {
+    await new Promise((r) => setTimeout(r, 400));
+    const visible = document.querySelector('.order-bar')?.classList.contains('is-visible');
+    document.querySelector('.order-bar__cta').click();
+    await new Promise((r) => setTimeout(r, 300));
+    const sheetOpen = !document.querySelector('.order-sheet').hidden;
+    const yielded = document.documentElement.classList.contains('sheet-open');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    await new Promise((r) => setTimeout(r, 400));
+    return { visible, sheetOpen, yielded };
+  });
+  check('sticky order bar visible in menu + yields to sheet', bar.visible && bar.sheetOpen && bar.yielded, JSON.stringify(bar));
+
+  // Event layer: buffer receives whitelisted events locally.
+  const events = await page.evaluate(async () => {
+    const names = () => (window.__flipEvents || []).map((e) => e.name);
+    document.querySelector('.product [data-fav]').click();
+    await new Promise((r) => setTimeout(r, 120));
+    return {
+      hasView: names().includes('product_view') || names().includes('category_view'),
+      hasSheet: names().includes('order_sheet_open'),
+      hasFav: names().includes('favorite_add') || names().includes('favorite_remove'),
+    };
+  });
+  check('event layer records local events', events.hasView && events.hasSheet && events.hasFav, JSON.stringify(events));
+
+  await page.evaluate(() => {
+    localStorage.removeItem('flip-favs');
+    localStorage.removeItem('flip-recent');
+  });
+  await page.close();
+}
+
+{
+  // Direct product deep link: CTA available immediately (no cinematic delay).
+  const page = await newPage({
+    viewport: { width: 390, height: 844 },
+    url: `${URL_BASE}#product-red-head`,
+  });
+  const deep = await page.evaluate(() => {
+    const article = document.getElementById('product-red-head');
+    const cta = article?.querySelector('[data-order]');
+    const rect = article?.getBoundingClientRect();
+    return {
+      revealed: article?.classList.contains('is-revealed'),
+      ctaVisible: !!cta && cta.offsetParent !== null,
+      near: !!rect && Math.abs(rect.top) < innerHeight,
+    };
+  });
+  check('deep link: product revealed + CTA immediate', deep.revealed && deep.ctaVisible && deep.near, JSON.stringify(deep));
+
+  // Deep link survives language switch.
+  await page.evaluate(() => document.getElementById('lang-toggle').click());
+  await new Promise((r) => setTimeout(r, 1800));
+  const afterLang = await page.evaluate(() => {
+    const rect = document.getElementById('product-red-head')?.getBoundingClientRect();
+    return !!rect && Math.abs(rect.top) < innerHeight * 1.5;
+  });
+  check('deep link survives language switch', afterLang);
+  await page.evaluate(() => document.getElementById('lang-toggle').click());
+  await page.close();
+}
+
+{
+  // QR fast path: ?src=box lands at the menu; ?src=bio keeps the full hero.
+  const box = await newPage({ viewport: { width: 390, height: 844 }, url: `${URL_BASE}?src=box` });
+  const boxLand = await box.evaluate(() => ({
+    scrolled: window.scrollY > innerHeight * 0.5,
+    src: (window.__flipEvents || []).every((e) => !e.src || e.src === 'box'),
+  }));
+  check('?src=box fast path lands at menu', boxLand.scrolled && boxLand.src, JSON.stringify(boxLand));
+  await box.close();
+
+  const bio = await newPage({ viewport: { width: 390, height: 844 }, url: `${URL_BASE}?src=bio` });
+  const bioLand = await bio.evaluate(() => window.scrollY < 40);
+  check('?src=bio keeps full hero', bioLand);
+  await bio.close();
+}
+
+{
+  // Platform memory: remembered platform first + honestly tagged.
+  const page = await newPage({ viewport: { width: 390, height: 844 }, interceptMultiLink: true });
+  const memory = await page.evaluate(async () => {
+    localStorage.setItem('flip-platform', 'jahez');
+    const first = document.querySelector('.product');
+    first.querySelector('[data-order]').click();
+    await new Promise((r) => setTimeout(r, 200));
+    const links = [...document.querySelectorAll('.order-sheet__platform')];
+    localStorage.removeItem('flip-platform');
+    return {
+      firstPlatform: links[0]?.dataset.platform,
+      remembered: links[0]?.classList.contains('is-remembered'),
+      tagged: !!links[0]?.querySelector('.order-sheet__again'),
+      allReal: links.every((l) => l.href.startsWith('https://example.com/')),
+    };
+  });
+  check(
+    'platform memory: remembered first + tagged + only real URLs',
+    memory.firstPlatform === 'jahez' && memory.remembered && memory.tagged && memory.allReal,
+    JSON.stringify(memory)
+  );
+  await page.close();
+}
+
 /* ---------- responsive matrix ---------- */
 // Full Part-7 width list + landscape phone + tablet landscape/portrait.
 const VIEWPORTS = [
-  ...[1920, 1600, 1440, 1280, 1024, 912, 820, 768, 540, 430, 390, 375, 360, 320].map((w) => ({
+  ...[1920, 1600, 1440, 1280, 1024, 912, 820, 768, 540, 430, 414, 390, 375, 360, 320].map((w) => ({
     label: `${w}px`,
     width: w,
     height: Math.max(700, Math.round(w * 0.62)),
   })),
   { label: 'landscape-phone 844x390', width: 844, height: 390 },
+  { label: 'tablet-portrait 834x1194', width: 834, height: 1194 },
   { label: 'tablet-landscape 1180x820', width: 1180, height: 820 },
 ];
 for (const vp of VIEWPORTS) {

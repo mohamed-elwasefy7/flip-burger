@@ -9,3 +9,6 @@ dist/
 brand-src/
 # Transient PDF-extraction scratch from the asset pipeline.
 .pdf-scratch/
+# Phase QA capture artifacts (screenshots/recordings) — reviewed, not shipped.
+shots-phase*/
+shots/

@@ -64,7 +64,7 @@ npm run shots       # screenshot helper (CDP via system Edge)
 
 `base: './'` (relative) makes the site work under **any** repo subpath *and* custom domains with no config. SW scope, manifest `start_url`/`scope`, and the 404 home-link all resolve relative to the deploy path. `.nojekyll` is emitted automatically.
 
-**Before launch — replace placeholders:** search-and-replace `REPLACE-ME.github.io/flip-burger` in `index.html`, `robots.txt`, `sitemap.xml` with the real domain.
+**Domain:** the production URL (`https://mohamed-elwasefy7.github.io/flip-burger/`) is set in `index.html` (canonical/OG), `robots.txt`, and `sitemap.xml`. If the site ever moves to a custom domain, search-and-replace it in those three files.
 
 ## Image pipeline
 
@@ -112,6 +112,7 @@ Prices are intentionally **absent** (not yet provided) — the price node is not
 - One IntersectionObserver drives reveals + scroll-spy; burger parallax is the only ScrollTrigger set (desktop + motion-OK), fully disposed on language re-render — no leaks, no duplicate handlers.
 - Responsive AVIF/WebP/JPG, lazy loading, first product prioritized. `prefers-reduced-motion` disables all motion and shows every section instantly.
 - The cinematic boot overlay gates first meaningful paint by design (see QA notes); it never traps the user (hard cap, hidden-tab fast path).
+- **Known measurement condition (pre-existing):** Lighthouse's *simulated* LCP can attribute LCP to the hero burger image revealed by the boot→intro choreography instead of the preloaded boot logo, inflating the simulated number (~5–6 s) while **observed** LCP stays ≈ 0.3–0.6 s and CLS = 0. This is a classification artifact of paint-under-overlay + throttling simulation, not a real regression — do not chase the simulated score with destructive rewrites; judge regressions by observed metrics + the other category scores (A11y/BP/SEO 100, CLS 0).
 
 ## Service worker / cache
 

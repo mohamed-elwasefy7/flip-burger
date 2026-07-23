@@ -13,6 +13,7 @@
      COLOR — layered warm blacks (never flat #000), print-ink fire hues
      ------------------------------------------------------------------ */
   --color-black: #0d0906;             /* matte black base */
+  --color-black-deep: #080503;        /* deepest photographic surround */
   --color-charcoal: #17100b;          /* smoke-swirl dark */
   --color-surface: #1e150e;           /* content panels */
   --color-surface-elevated: #281c13;  /* raised panels, sheets, modals */
@@ -22,9 +23,10 @@
   --color-fire-orange: #e25822;       /* flame mids */
   --color-warm-yellow: #f6a81c;       /* lightning bolts, flame tips */
   --color-vintage-cream: #f2e6c9;     /* distressed lettering */
+  --color-vintage-cream-soft: #dcccad;/* quiet ink / supporting display */
 
   --color-text-primary: var(--color-vintage-cream);
-  --color-text-secondary: #b4a488;    /* muted warm — ≥6:1 on all surfaces */
+  --color-text-secondary: #c0ad8e;    /* muted warm — comfortably readable */
 
   --color-border: rgba(242, 230, 201, 0.14);
   --color-border-strong: rgba(242, 230, 201, 0.28);
@@ -57,10 +59,10 @@
   --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.0625rem);
 
   /* Fluid type scale — cinematic, oversized display */
-  --text-hero: clamp(3.4rem, 13vw, 10rem);      /* FLIP BURGER wordmark */
-  --text-title: clamp(2.4rem, 7.5vw, 6rem);     /* category headings */
-  --text-product: clamp(2rem, 5.5vw, 4.75rem);  /* product names — huge */
-  --text-ghost: clamp(4.5rem, 22vw, 17rem);     /* giant type behind product */
+  --text-hero: clamp(4.5rem, 15vw, 13.5rem);    /* FLIP BURGER wordmark */
+  --text-title: clamp(3.25rem, 9vw, 8rem);       /* category headings */
+  --text-product: clamp(3rem, 6.8vw, 7rem);      /* product names — huge */
+  --text-ghost: clamp(6rem, 24vw, 20rem);        /* giant type behind product */
   --text-price: clamp(1.25rem, 1.2vw + 0.9rem, 1.75rem);
   --text-lead: clamp(1.05rem, 0.9rem + 0.7vw, 1.375rem); /* supporting lead copy */
   --text-label: 0.75rem;
@@ -89,13 +91,17 @@
   --container-narrow: 60rem;   /*  960px */
   --container-pad: clamp(1rem, 4vw, 2.5rem);
   --grid-gap: clamp(0.75rem, 2vw, 1.5rem);
+  --content-measure: 65ch;
+  --section-space: clamp(4.5rem, 9vw, 8rem);
+  --nav-height: 4.5rem;
+  --category-nav-height: 3.75rem;
 
   /* ------------------------------------------------------------------
      RADIUS — bold and structured, like the packaging. No over-rounding.
      ------------------------------------------------------------------ */
   --radius-sm: 0.375rem;   /*  6px — chips, inputs */
-  --radius-md: 0.625rem;   /* 10px — buttons */
-  --radius-lg: 1rem;       /* 16px — panels, sheets */
+  --radius-md: 0.5rem;     /*  8px — buttons */
+  --radius-lg: 0.875rem;   /* 14px — panels, sheets */
   --radius-pill: 999px;
 
   /* ------------------------------------------------------------------
@@ -155,8 +161,8 @@
   /* ------------------------------------------------------------------
      TOUCH
      ------------------------------------------------------------------ */
-  --tap-target: 2.75rem; /* 44px minimum */
-  --control-height: 3rem; /* 48px default control */
+  --tap-target: 2.75rem;   /* 44px minimum */
+  --control-height: 3.25rem; /* 52px default control */
 }
 
 /* Reduced motion: collapse every motion token so any transition/animation

@@ -9,11 +9,23 @@
 
 import { str, pickText } from '../core/i18n.js';
 import { activeOrderLinks } from './menu-loader.js';
+import { track } from '../core/events.js';
+
+const PLATFORM_KEY = 'flip-platform';
+
+function rememberedPlatform() {
+  try {
+    return localStorage.getItem(PLATFORM_KEY);
+  } catch {
+    return null;
+  }
+}
 
 let root = null;
 let lastOpener = null;
 let lenisRef = null;
 let keyHandler = null;
+let closeTimer = 0;
 
 function esc(text) {
   const div = document.createElement('div');
@@ -29,8 +41,12 @@ function build() {
     <div class="overlay order-sheet__overlay" data-close></div>
     <div class="sheet order-sheet__panel" role="dialog" aria-modal="true" aria-labelledby="order-sheet-title">
       <div class="sheet__handle" aria-hidden="true"></div>
+      <hr class="heat-rule order-sheet__rule" aria-hidden="true" />
       <div class="order-sheet__head">
-        <h3 class="product-name order-sheet__title" id="order-sheet-title"></h3>
+        <div class="order-sheet__heading">
+          <span class="label order-sheet__kicker"></span>
+          <h3 class="product-name order-sheet__title" id="order-sheet-title"></h3>
+        </div>
         <button class="btn btn--ghost btn--icon order-sheet__close" type="button" data-close>
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
         </button>
@@ -40,6 +56,20 @@ function build() {
   document.body.appendChild(root);
 
   root.addEventListener('click', (e) => {
+    const platform = e.target.closest('.order-sheet__platform');
+    if (platform) {
+      // Real outbound tap — remember the choice, record the conversion event.
+      try {
+        localStorage.setItem(PLATFORM_KEY, platform.dataset.platform || '');
+      } catch {
+        /* non-fatal */
+      }
+      track('delivery_platform_click', {
+        platform: platform.dataset.platform || 'unknown',
+        product: root.dataset.productId || null,
+      });
+      return; // let the link navigate
+    }
     if (e.target.closest('[data-close]')) closeOrderSheet();
   });
 }
@@ -49,15 +79,28 @@ export function initOrderSheet({ lenis }) {
   if (!root) build();
 }
 
-export function openOrderSheet(product, opener) {
+export function openOrderSheet(product, opener, { links: linksOverride } = {}) {
   if (!root) build();
   lastOpener = opener || document.activeElement;
 
-  const title = pickText(product, 'name');
-  root.querySelector('.order-sheet__title').textContent = `${str('menu.orderVia')} — ${title}`;
+  // Brand-level open (sticky bar): no product context — the wordmark leads.
+  const title = product ? pickText(product, 'name') : 'FLIP BURGER';
+  root.dataset.productId = product?.id || '';
+  root.querySelector('.order-sheet__kicker').textContent = str('menu.orderVia');
+  root.querySelector('.order-sheet__title').textContent = title;
   root.querySelector('.order-sheet__close').setAttribute('aria-label', str('menu.close'));
 
-  const links = activeOrderLinks(product);
+  // Only real URLs ever render (activeOrderLinks filters empties). The
+  // remembered platform — a real prior tap — moves to the front with an
+  // honest «مرة ثانية؟» tag; nothing is invented.
+  let links = linksOverride ?? (product ? activeOrderLinks(product) : []);
+  const remembered = rememberedPlatform();
+  if (remembered && links.some((l) => l.id === remembered)) {
+    links = [...links.filter((l) => l.id === remembered), ...links.filter((l) => l.id !== remembered)];
+  }
+
+  track('order_sheet_open', { product: product?.id || null, links: links.length });
+
   const body = root.querySelector('.order-sheet__body');
 
   if (links.length === 0) {
@@ -70,15 +113,22 @@ export function openOrderSheet(product, opener) {
         ${links
           .map(
             (l) => `
-          <a class="btn btn--primary order-sheet__platform" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">
-            ${esc(str(`menu.platforms.${l.id}`) || l.id)}
+          <a class="btn btn--primary order-sheet__platform${l.id === remembered ? ' is-remembered' : ''}"
+             href="${esc(l.url)}" data-platform="${esc(l.id)}" target="_blank" rel="noopener noreferrer">
+            <span>${esc(str(`menu.platforms.${l.id}`) || l.id)}</span>
+            ${l.id === remembered ? `<span class="order-sheet__again">${esc(str('menu.orderAgain'))}</span>` : ''}
           </a>`
           )
           .join('')}
       </div>`;
   }
 
+  clearTimeout(closeTimer);
   root.hidden = false;
+  // Entrance runs off CSS transitions keyed to .is-open (token durations, so
+  // reduced-motion collapses them to instant). Double-rAF guarantees the
+  // hidden→visible style flush lands before the class flips.
+  requestAnimationFrame(() => requestAnimationFrame(() => root.classList.add('is-open')));
   document.documentElement.classList.add('sheet-open');
   lenisRef?.stop();
 
@@ -115,15 +165,21 @@ function trapTab(event) {
 }
 
 export function closeOrderSheet() {
-  if (!root || root.hidden) return;
-  root.hidden = true;
+  if (!root || root.hidden || !root.classList.contains('is-open')) return;
+  // Exit is faster than entry (Motion Bible law): the un-classed state is the
+  // fast-exit transition; `hidden` lands after it so the slide-down is seen.
+  root.classList.remove('is-open');
   document.documentElement.classList.remove('sheet-open');
   document.removeEventListener('keydown', keyHandler);
   lenisRef?.start();
   lastOpener?.focus?.();
   lastOpener = null;
+  clearTimeout(closeTimer);
+  closeTimer = setTimeout(() => {
+    root.hidden = true;
+  }, 220);
 }
 
 export function isOrderSheetOpen() {
-  return !!root && !root.hidden;
+  return !!root && !root.hidden && root.classList.contains('is-open');
 }

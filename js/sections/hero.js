@@ -55,16 +55,45 @@ function parallax(gsap, ScrollTrigger) {
   );
 }
 
+/** Returning-visitor reveal: one weighted rise, no staged theater. */
+function fastReveal(gsap) {
+  gsap.fromTo(
+    '.hero__inner',
+    { autoAlpha: 0, y: 14 },
+    { autoAlpha: 1, y: 0, duration: 0.45, ease: 'expo.out' }
+  );
+}
+
+const IGNITED_KEY = 'flip-ignited';
+
 export function initHero({ gsap, ScrollTrigger, bootDone, reduceMotion }) {
   const ember = createEmberField(document.getElementById('hero-embers'), { gsap, reduceMotion });
   initMagnetic({ gsap, reduceMotion, root: document.querySelector('.hero') });
 
   if (reduceMotion) return; // content visible via CSS; embers already skipped
 
+  let ignited = false;
+  try {
+    ignited = sessionStorage.getItem(IGNITED_KEY) === '1';
+  } catch {
+    /* private mode — treat as first visit */
+  }
+
   bootDone.then(() => {
     if (document.hidden) {
       gsap.set('.hero__inner, [data-hero]', { clearProps: 'all', autoAlpha: 1 });
       return;
+    }
+    // The full cinematic ignition plays once per session; a returning visitor
+    // gets the hero instantly-ish — repetition turns theater into a toll booth.
+    if (ignited) {
+      fastReveal(gsap);
+      return;
+    }
+    try {
+      sessionStorage.setItem(IGNITED_KEY, '1');
+    } catch {
+      /* non-fatal */
     }
     intro(gsap);
   });

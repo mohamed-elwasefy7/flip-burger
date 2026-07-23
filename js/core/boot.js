@@ -15,7 +15,7 @@
 const MIN_VISIBLE = 350;
 const MAX_VISIBLE = 1800;
 
-export function initBoot({ gsap, lenis, reduceMotion }) {
+export function initBoot({ gsap, lenis, reduceMotion, fastExit = false }) {
   const overlay = document.getElementById('boot');
   const bar = document.getElementById('boot-bar');
   if (!overlay || !bar) return Promise.resolve();
@@ -73,7 +73,9 @@ export function initBoot({ gsap, lenis, reduceMotion }) {
 
   const allLoaded = Promise.all([domReady, document.fonts.ready, heroAssets]);
   const forceExit = new Promise((r) => setTimeout(r, MAX_VISIBLE));
-  const minTime = new Promise((r) => setTimeout(r, MIN_VISIBLE));
+  // QR fast path (?src=box|bag|flyer|story): a returning customer holding the
+  // box — no minimum-dwell theater, exit the moment assets are ready.
+  const minTime = fastExit ? Promise.resolve() : new Promise((r) => setTimeout(r, MIN_VISIBLE));
 
   // --- exit -------------------------------------------------------------
   return Promise.race([Promise.all([allLoaded, minTime]), forceExit]).then(
@@ -94,8 +96,9 @@ export function initBoot({ gsap, lenis, reduceMotion }) {
         };
 
         // Animation depends on rAF, which browsers suspend in hidden tabs —
-        // never let the exit wait on a frame that may not come.
-        if (reduceMotion || document.hidden) {
+        // never let the exit wait on a frame that may not come. The QR fast
+        // path also skips the curtain: instant unlock, no theater.
+        if (reduceMotion || document.hidden || fastExit) {
           unlock();
           return;
         }

@@ -108,7 +108,8 @@ export function initMagnetic({ gsap, reduceMotion, root = document }) {
       const my = e.clientY - (r.top + r.height / 2);
       gsap.to(el, { x: mx * strength, y: my * strength, duration: 0.4, ease: 'power3.out' });
     };
-    const reset = () => gsap.to(el, { x: 0, y: 0, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+    // Heavy settle, never bouncy — Motion Bible law.
+    const reset = () => gsap.to(el, { x: 0, y: 0, duration: 0.45, ease: 'power3.out' });
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', reset);
   });
