@@ -95,7 +95,7 @@ const badResponses = [];
     avifSources: document.querySelectorAll('.product__media source[type="image/avif"]').length,
     lang: document.documentElement.lang,
   }));
-  check('29 products render', shape.products === 29, `got ${shape.products}`);
+  check('28 products render', shape.products === 28, `got ${shape.products}`);
   check('4 category chips', shape.chips.length === 4, shape.chips.join(','));
 
   const exp = await page.evaluate(() => ({
@@ -109,7 +109,7 @@ const badResponses = [];
   }));
   check('4 category intros', exp.intros === 4, `got ${exp.intros}`);
   check('single ambient mood layer', exp.ambient === 1, `got ${exp.ambient}`);
-  check('14 framed drinks + 15 blended food medias', exp.frames === 14 && exp.blends === 15, JSON.stringify(exp));
+  check('14 framed drinks + 14 blended food medias', exp.frames === 14 && exp.blends === 14, JSON.stringify(exp));
   check('category classes stamped', exp.catClasses);
   // Production prices (set 2026-07-23): every product carries a price node.
   const prices = await page.evaluate(() => ({
@@ -118,12 +118,12 @@ const badResponses = [];
     water: document.querySelector('#product-small-water-nova .product__price')?.textContent.replace(/\s/g, ''),
   }));
   check(
-    '29 production prices render with currency',
-    prices.count === 29 && prices.blackTwins?.startsWith('29') && prices.water?.startsWith('2'),
+    '28 production prices render with currency',
+    prices.count === 28 && prices.blackTwins?.startsWith('29') && prices.water?.startsWith('2'),
     JSON.stringify(prices)
   );
-  check('no placeholders — all real photos', shape.placeholders === 0 && shape.realPictures === 29);
-  check('AVIF sources present on every product', shape.avifSources === 29, `got ${shape.avifSources}`);
+  check('no placeholders — all real photos', shape.placeholders === 0 && shape.realPictures === 28);
+  check('AVIF sources present on every product', shape.avifSources === 28, `got ${shape.avifSources}`);
   check('AR name renders on first product', shape.lang === 'ar' && /[؀-ۿ]/.test(shape.firstTitle), shape.firstTitle);
 
   // Mobile: media before content for every product
@@ -134,7 +134,7 @@ const badResponses = [];
       return media && content && media.getBoundingClientRect().top < content.getBoundingClientRect().top;
     })
   );
-  check('mobile: image before text (all 29)', mediaFirst);
+  check('mobile: image before text (all products)', mediaFirst);
 
   // Scroll spy → travel to last category through the app path (chip click →
   // Lenis). Native scrollIntoView is avoided: it desyncs Lenis' internal
@@ -249,7 +249,7 @@ const badResponses = [];
   }, pid);
   check('order sheet Tab focus trap holds', trap);
 
-  // Runtime Menu JSON-LD injected, data-driven (4 sections / 29 items)
+  // Runtime Menu JSON-LD injected, data-driven (4 sections / 28 items)
   const schema = await page.evaluate(() => {
     const node = document.getElementById('menu-schema');
     if (!node) return null;
@@ -266,8 +266,8 @@ const badResponses = [];
     }
   });
   check(
-    'menu JSON-LD injected (4 sections / 29 items)',
-    schema && schema.type === 'Menu' && schema.sections === 4 && schema.items === 29,
+    'menu JSON-LD injected (4 sections / 28 items)',
+    schema && schema.type === 'Menu' && schema.sections === 4 && schema.items === 28,
     JSON.stringify(schema)
   );
 
@@ -299,7 +299,7 @@ const badResponses = [];
   });
   check(
     'language re-render duplicates nothing',
-    hygiene.products === 29 && hygiene.intros === 4 && hygiene.ambient === 1 && hygiene.navs === 1 && hygiene.schema === 1,
+    hygiene.products === 28 && hygiene.intros === 4 && hygiene.ambient === 1 && hygiene.navs === 1 && hygiene.schema === 1,
     JSON.stringify(hygiene)
   );
 
@@ -328,7 +328,7 @@ const badResponses = [];
       revealed: document.querySelectorAll('.product.is-revealed').length,
     };
   });
-  check('reduced motion: all content visible instantly', rm.allVisible && rm.revealed === 29, JSON.stringify(rm));
+  check('reduced motion: all content visible instantly', rm.allVisible && rm.revealed === 28, JSON.stringify(rm));
   await page.close();
 }
 

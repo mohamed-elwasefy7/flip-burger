@@ -97,33 +97,10 @@
       "price": 25
     },
     {
-      "id": "classico-chicken",
+      "id": "classico-chicken-grilled",
       "category": "burgers",
       "nameAr": "كلاسيكو تشيكن",
       "nameEn": "CLASSICO CHICKEN",
-      "images": {
-        "base": "assets/images/menu/burger/classico-chicken",
-        "widths": [
-          480,
-          800,
-          1280
-        ],
-        "fallback": "assets/images/menu/burger/classico-chicken-1280.jpg",
-        "w": 1280,
-        "h": 1280
-      },
-      "imageAltAr": "كلاسيكو تشيكن",
-      "imageAltEn": "CLASSICO CHICKEN",
-      "layout": "image-right",
-      "background": "charcoal",
-      "accent": "flame-red",
-      "price": 22
-    },
-    {
-      "id": "classico-chicken-grilled",
-      "category": "burgers",
-      "nameAr": "كلاسيكو تشيكن جريلد",
-      "nameEn": "CLASSICO CHICKEN GRILLED",
       "images": {
         "base": "assets/images/menu/burger/classico-chicken-grilled",
         "widths": [
@@ -135,8 +112,8 @@
         "w": 1254,
         "h": 1254
       },
-      "imageAltAr": "كلاسيكو تشيكن جريلد",
-      "imageAltEn": "CLASSICO CHICKEN GRILLED",
+      "imageAltAr": "كلاسيكو تشيكن",
+      "imageAltEn": "CLASSICO CHICKEN",
       "layout": "image-left",
       "background": "black",
       "accent": "flame-red",

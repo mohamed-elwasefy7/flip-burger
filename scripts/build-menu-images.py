@@ -30,7 +30,8 @@ MANIFEST = [
     ("BURGER", "burger", [
         ("BLACK TWINS.png", "black-twins"),
         ("CLASSICO BEEF.png", "classico-beef"),
-        ("CLASSICO CHICKEN.png", "classico-chicken"),
+        # classico-chicken (fried) removed from the menu 2026-07-23; the
+        # grilled build carries the CLASSICO CHICKEN name now (slug kept).
         ("CLASSICO CHICKEN  GRILLED.png", "classico-chicken-grilled"),
         ("MID NIGHT.png", "mid-night"),
         ("RED HEAD.png", "red-head"),
